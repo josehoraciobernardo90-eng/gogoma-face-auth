@@ -1,0 +1,5 @@
+{
+  "cameraIp": "http://10.227.236.127:8080/video",
+  "isArmed": true,
+  "isPanic": false
+}

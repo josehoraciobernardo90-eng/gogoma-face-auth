@@ -1,0 +1,456 @@
+
+> gogoma-face-auth-client@1.0.0 dev
+> vite
+
+
+  [32m[1mVITE[22m v4.5.14[39m  [2mready in [0m[1m2496[22m[2m[0m ms[22m
+
+  [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m7777[22m/[39m
+  [32m➜[39m  [1mNetwork[22m: [36mhttp://10.227.236.150:[1m7777[22m/[39m
+[2m[32m  ➜[39m[22m[2m  press [22m[1mh[22m[2m to show help[22m
+(node:33548) [DEP0060] DeprecationWarning: The `util._extend` API is deprecated. Please use Object.assign() instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/index.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/draw/index.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/ageGenderNet/index.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/faceLandmarkNet/index.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/classes/index.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/faceExpressionNet/index.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/faceRecognitionNet/index.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/dom/index.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/factories/index.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/globalApi/index.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/tinyYolov2/index.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/tinyFaceDetector/index.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/mtcnn/index.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/utils/index.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/env/index.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/euclideanDistance.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/ssdMobilenetv1/index.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/resizeResults.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/NeuralNetwork.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/ops/index.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/draw/drawContour.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/draw/drawDetections.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/draw/drawFaceExpressions.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/ageGenderNet/types.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/draw/DrawBox.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/draw/DrawTextField.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/ageGenderNet/AgeGenderNet.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/draw/DrawFaceLandmarks.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/faceLandmarkNet/FaceLandmark68Net.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/classes/BoundingBox.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/classes/FaceDetection.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/classes/Box.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/classes/FaceLandmarks.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/classes/FaceLandmarks68.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/classes/FaceLandmarks5.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/classes/LabeledBox.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/classes/FaceMatch.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/classes/LabeledFaceDescriptors.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/faceLandmarkNet/FaceLandmark68TinyNet.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/classes/Rect.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/classes/Point.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/classes/ObjectDetection.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/classes/PredictedBox.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/classes/Dimensions.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/faceExpressionNet/FaceExpressions.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/faceExpressionNet/FaceExpressionNet.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/faceRecognitionNet/FaceRecognitionNet.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/dom/awaitMediaLoaded.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/dom/bufferToImage.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/dom/createCanvas.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/dom/extractFaces.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/dom/fetchJson.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/dom/fetchImage.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/dom/getMediaDimensions.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/dom/extractFaceTensors.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/dom/fetchNetWeights.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/dom/fetchOrThrow.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/dom/isMediaElement.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/dom/getContext2dOrThrow.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/dom/matchDimensions.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/dom/imageTensorToCanvas.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/dom/resolveInput.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/dom/imageToSquare.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/dom/loadWeightMap.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/dom/NetInput.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/dom/isMediaLoaded.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/factories/WithFaceDetection.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/factories/WithFaceExpressions.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/factories/WithAge.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/factories/WithFaceDescriptor.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/factories/WithFaceLandmarks.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/dom/toNetInput.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/factories/WithGender.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/globalApi/ComputeFaceDescriptorsTasks.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/globalApi/allFaces.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/globalApi/detectFaces.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/globalApi/DetectFaceLandmarksTasks.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/globalApi/DetectFacesTasks.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/globalApi/nets.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/globalApi/FaceMatcher.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/mtcnn/MtcnnOptions.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/mtcnn/Mtcnn.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/tinyFaceDetector/TinyFaceDetectorOptions.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/tinyYolov2/TinyYolov2.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/tinyYolov2/TinyYolov2Options.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/tinyYolov2/config.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/tinyFaceDetector/TinyFaceDetector.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/globalApi/ComposableTask.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/env/isBrowser.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/env/isNodejs.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/env/createBrowserEnv.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/env/createFileSystem.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/env/createNodejsEnv.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/ssdMobilenetv1/SsdMobilenetv1.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/ssdMobilenetv1/SsdMobilenetv1Options.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/common/getModelUris.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/ops/iou.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/ops/minBbox.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/ops/normalize.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/ops/nonMaxSuppression.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/ops/shuffleArray.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/ops/padToSquare.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/common/fullyConnectedLayer.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/faceProcessor/util.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/ageGenderNet/extractParams.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/faceLandmarkNet/FaceLandmark68NetBase.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/xception/TinyXception.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/faceFeatureExtractor/FaceFeatureExtractor.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/faceProcessor/FaceProcessor.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/faceFeatureExtractor/TinyFaceFeatureExtractor.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/ageGenderNet/extractParamsFromWeigthMap.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/faceRecognitionNet/convLayer.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/faceRecognitionNet/extractParams.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/faceRecognitionNet/extractParamsFromWeigthMap.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/faceRecognitionNet/residualLayer.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/globalApi/PredictAgeAndGenderTask.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/globalApi/extractFacesAndComputeResults.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/globalApi/PredictFaceExpressionsTask.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/mtcnn/config.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/mtcnn/bgrToRgbTensor.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/mtcnn/getSizesForScale.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/mtcnn/extractParams.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/mtcnn/pyramidDown.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/mtcnn/stage1.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/mtcnn/stage2.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/mtcnn/stage3.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/tinyYolov2/const.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/tinyFaceDetector/const.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/tinyYolov2/TinyYolov2Base.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/mtcnn/extractParamsFromWeigthMap.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/ssdMobilenetv1/extractParams.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/ssdMobilenetv1/extractParamsFromWeigthMap.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/ssdMobilenetv1/mobileNetV1.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/ssdMobilenetv1/nonMaxSuppression.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/ssdMobilenetv1/outputLayer.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/ssdMobilenetv1/predictionLayer.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/common/index.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/xception/extractParamsFromWeigthMap.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/xception/extractParams.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/faceFeatureExtractor/denseBlock.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/faceFeatureExtractor/extractParamsFromWeigthMap.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/faceProcessor/extractParams.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/faceProcessor/extractParamsFromWeigthMap.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/faceFeatureExtractor/extractParams.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/faceRecognitionNet/scaleLayer.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/faceFeatureExtractor/extractParamsFromWeigthMapTiny.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/mtcnn/normalize.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/mtcnn/RNet.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/faceFeatureExtractor/extractParamsTiny.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/mtcnn/PNet.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/mtcnn/extractImagePatches.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/mtcnn/MtcnnBox.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/mtcnn/ONet.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/tinyYolov2/depthwiseSeparableConv.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/tinyYolov2/convWithBatchNorm.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/tinyYolov2/extractParams.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/tinyYolov2/extractParamsFromWeigthMap.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/tinyYolov2/leaky.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/ssdMobilenetv1/pointwiseConvLayer.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/ssdMobilenetv1/boxPredictionLayer.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/common/convLayer.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/common/depthwiseSeparableConv.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/common/disposeUnusedWeightTensors.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/common/extractWeightsFactory.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/common/extractFCParamsFactory.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/common/extractConvParamsFactory.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/common/types.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/common/extractWeightEntryFactory.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/common/extractSeparableConvParamsFactory.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/common/loadConvParamsFactory.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/faceFeatureExtractor/loadParamsFactory.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/faceFeatureExtractor/extractorsFactory.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/mtcnn/prelu.js" points to missing source files
+Sourcemap for "C:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/node_modules/face-api.js/build/es6/mtcnn/sharedLayers.js" points to missing source files
+[2m23:17:14[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/App.jsx, /src/index.css[22m
+[2m23:17:14[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/App.jsx, /src/index.css[22m
+[2m23:17:30[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/App.jsx, /src/index.css[22m
+[2m23:17:30[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/App.jsx, /src/index.css[22m
+[2m23:18:13[22m [31m[1m[vite][22m[39m [31mInternal server error: C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\src\App.jsx: Identifier 'saveActivityLog' has already been declared. (583:8)
+
+[0m [90m 581 |[31m
+ [90m 582 |[31m   [90m// 4. Protocolo de Segurança e Log Forense[31m
+[31m[1m>[22m[31m[90m 583 |[31m   [36mconst[31m saveActivityLog [33m=[31m [36masync[31m (detection[33m,[31m image[33m,[31m label[33m,[31m camId [33m=[31m [35m1[31m[33m,[31m isAuthorized [33m=[31m [36mfalse[31m) [33m=>[31m {
+ [90m     |[31m         [31m[1m^[22m[31m
+ [90m 584 |[31m     [90m// 1. Telegram (Resiliente)[31m
+ [90m 585 |[31m     [36mif[31m ([33m![31misAuthorized) {
+ [90m 586 |[31m       [36mtry[31m {[0m[39m
+  Plugin: [35mvite:react-babel[39m
+  File: [36mC:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/src/App.jsx[39m:583:8
+[33m  581|  
+  582|    // 4. Protocolo de Segurança e Log Forense
+  583|    const saveActivityLog = async (detection, image, label, camId = 1, isAuthorized = false) => {
+     |          ^
+  584|      // 1. Telegram (Resiliente)
+  585|      if (!isAuthorized) {[39m
+      at constructor (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:365:19)
+      at JSXParserMixin.raise (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:6599:19)
+      at ScopeHandler.checkRedeclarationInScope (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:1619:19)
+      at ScopeHandler.declareName (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:1585:12)
+      at JSXParserMixin.declareNameFromIdentifier (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:7567:16)
+      at JSXParserMixin.checkIdentifier (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:7563:12)
+      at JSXParserMixin.checkLVal (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:7500:12)
+      at JSXParserMixin.parseVarId (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:13412:10)
+      at JSXParserMixin.parseVar (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:13383:12)
+      at JSXParserMixin.parseVarStatement (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:13230:10)
+      at JSXParserMixin.parseStatementContent (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:12851:23)
+      at JSXParserMixin.parseStatementLike (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:12767:17)
+      at JSXParserMixin.parseStatementListItem (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:12747:17)
+      at JSXParserMixin.parseBlockOrModuleBlockBody (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:13316:61)
+      at JSXParserMixin.parseBlockBody (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:13309:10)
+      at JSXParserMixin.parseBlock (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:13297:10)
+      at JSXParserMixin.parseFunctionBody (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:12100:24)
+      at JSXParserMixin.parseFunctionBodyAndFinish (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:12086:10)
+      at C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:13445:12
+      at JSXParserMixin.withSmartMixTopicForbiddingContext (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:12403:14)
+      at JSXParserMixin.parseFunction (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:13444:10)
+      at JSXParserMixin.parseExportDefaultExpression (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:13907:19)
+      at JSXParserMixin.parseExport (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:13828:25)
+      at JSXParserMixin.parseStatementContent (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:12878:27)
+      at JSXParserMixin.parseStatementLike (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:12767:17)
+      at JSXParserMixin.parseModuleItem (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:12744:17)
+      at JSXParserMixin.parseBlockOrModuleBlockBody (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:13316:36)
+      at JSXParserMixin.parseBlockBody (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:13309:10)
+      at JSXParserMixin.parseProgram (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:12622:10)
+      at JSXParserMixin.parseTopLevel (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:12612:25)
+      at JSXParserMixin.parse (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:14488:25)
+      at parse (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:14522:38)
+      at parser (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\core\lib\parser\index.js:41:34)
+      at parser.next (<anonymous>)
+      at normalizeFile (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\core\lib\transformation\normalize-file.js:64:37)
+      at normalizeFile.next (<anonymous>)
+      at run (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\core\lib\transformation\index.js:22:50)
+      at run.next (<anonymous>)
+      at transform (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\core\lib\transform.js:22:33)
+      at transform.next (<anonymous>)
+      at step (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\gensync\index.js:261:32)
+      at C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\gensync\index.js:273:13
+      at async.call.result.err.err (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\gensync\index.js:223:11)
+      at C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\gensync\index.js:189:28
+      at C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\core\lib\gensync-utils\async.js:67:7
+      at C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\gensync\index.js:113:33
+      at step (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\gensync\index.js:287:14)
+      at C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\gensync\index.js:273:13
+      at async.call.result.err.err (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\gensync\index.js:223:11)
+[2m23:18:13[22m [31m[1m[vite][22m[39m [31mInternal server error: C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\src\App.jsx: Identifier 'saveActivityLog' has already been declared. (583:8)
+
+[0m [90m 581 |[31m
+ [90m 582 |[31m   [90m// 4. Protocolo de Segurança e Log Forense[31m
+[31m[1m>[22m[31m[90m 583 |[31m   [36mconst[31m saveActivityLog [33m=[31m [36masync[31m (detection[33m,[31m image[33m,[31m label[33m,[31m camId [33m=[31m [35m1[31m[33m,[31m isAuthorized [33m=[31m [36mfalse[31m) [33m=>[31m {
+ [90m     |[31m         [31m[1m^[22m[31m
+ [90m 584 |[31m     [90m// 1. Telegram (Resiliente)[31m
+ [90m 585 |[31m     [36mif[31m ([33m![31misAuthorized) {
+ [90m 586 |[31m       [36mtry[31m {[0m[39m
+  Plugin: [35mvite:react-babel[39m
+  File: [36mC:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/src/App.jsx[39m:583:8
+[33m  581|  
+  582|    // 4. Protocolo de Segurança e Log Forense
+  583|    const saveActivityLog = async (detection, image, label, camId = 1, isAuthorized = false) => {
+     |          ^
+  584|      // 1. Telegram (Resiliente)
+  585|      if (!isAuthorized) {[39m
+      at constructor (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:365:19)
+      at JSXParserMixin.raise (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:6599:19)
+      at ScopeHandler.checkRedeclarationInScope (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:1619:19)
+      at ScopeHandler.declareName (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:1585:12)
+      at JSXParserMixin.declareNameFromIdentifier (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:7567:16)
+      at JSXParserMixin.checkIdentifier (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:7563:12)
+      at JSXParserMixin.checkLVal (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:7500:12)
+      at JSXParserMixin.parseVarId (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:13412:10)
+      at JSXParserMixin.parseVar (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:13383:12)
+      at JSXParserMixin.parseVarStatement (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:13230:10)
+      at JSXParserMixin.parseStatementContent (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:12851:23)
+      at JSXParserMixin.parseStatementLike (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:12767:17)
+      at JSXParserMixin.parseStatementListItem (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:12747:17)
+      at JSXParserMixin.parseBlockOrModuleBlockBody (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:13316:61)
+      at JSXParserMixin.parseBlockBody (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:13309:10)
+      at JSXParserMixin.parseBlock (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:13297:10)
+      at JSXParserMixin.parseFunctionBody (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:12100:24)
+      at JSXParserMixin.parseFunctionBodyAndFinish (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:12086:10)
+      at C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:13445:12
+      at JSXParserMixin.withSmartMixTopicForbiddingContext (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:12403:14)
+      at JSXParserMixin.parseFunction (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:13444:10)
+      at JSXParserMixin.parseExportDefaultExpression (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:13907:19)
+      at JSXParserMixin.parseExport (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:13828:25)
+      at JSXParserMixin.parseStatementContent (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:12878:27)
+      at JSXParserMixin.parseStatementLike (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:12767:17)
+      at JSXParserMixin.parseModuleItem (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:12744:17)
+      at JSXParserMixin.parseBlockOrModuleBlockBody (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:13316:36)
+      at JSXParserMixin.parseBlockBody (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:13309:10)
+      at JSXParserMixin.parseProgram (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:12622:10)
+      at JSXParserMixin.parseTopLevel (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:12612:25)
+      at JSXParserMixin.parse (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:14488:25)
+      at parse (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:14522:38)
+      at parser (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\core\lib\parser\index.js:41:34)
+      at parser.next (<anonymous>)
+      at normalizeFile (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\core\lib\transformation\normalize-file.js:64:37)
+      at normalizeFile.next (<anonymous>)
+      at run (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\core\lib\transformation\index.js:22:50)
+      at run.next (<anonymous>)
+      at transform (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\core\lib\transform.js:22:33)
+      at transform.next (<anonymous>)
+      at step (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\gensync\index.js:261:32)
+      at C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\gensync\index.js:273:13
+      at async.call.result.err.err (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\gensync\index.js:223:11)
+      at C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\gensync\index.js:189:28
+      at C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\core\lib\gensync-utils\async.js:67:7
+      at C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\gensync\index.js:113:33
+      at step (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\gensync\index.js:287:14)
+      at C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\gensync\index.js:273:13
+      at async.call.result.err.err (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\gensync\index.js:223:11)
+[2m23:18:13[22m [31m[1m[vite][22m[39m [31mInternal server error: C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\src\App.jsx: Identifier 'saveActivityLog' has already been declared. (583:8)
+
+[0m [90m 581 |[31m
+ [90m 582 |[31m   [90m// 4. Protocolo de Segurança e Log Forense[31m
+[31m[1m>[22m[31m[90m 583 |[31m   [36mconst[31m saveActivityLog [33m=[31m [36masync[31m (detection[33m,[31m image[33m,[31m label[33m,[31m camId [33m=[31m [35m1[31m[33m,[31m isAuthorized [33m=[31m [36mfalse[31m) [33m=>[31m {
+ [90m     |[31m         [31m[1m^[22m[31m
+ [90m 584 |[31m     [90m// 1. Telegram (Resiliente)[31m
+ [90m 585 |[31m     [36mif[31m ([33m![31misAuthorized) {
+ [90m 586 |[31m       [36mtry[31m {[0m[39m
+  Plugin: [35mvite:react-babel[39m
+  File: [36mC:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/src/App.jsx[39m:583:8
+[33m  581|  
+  582|    // 4. Protocolo de Segurança e Log Forense
+  583|    const saveActivityLog = async (detection, image, label, camId = 1, isAuthorized = false) => {
+     |          ^
+  584|      // 1. Telegram (Resiliente)
+  585|      if (!isAuthorized) {[39m
+      at constructor (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:365:19)
+      at JSXParserMixin.raise (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:6599:19)
+      at ScopeHandler.checkRedeclarationInScope (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:1619:19)
+      at ScopeHandler.declareName (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:1585:12)
+      at JSXParserMixin.declareNameFromIdentifier (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:7567:16)
+      at JSXParserMixin.checkIdentifier (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:7563:12)
+      at JSXParserMixin.checkLVal (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:7500:12)
+      at JSXParserMixin.parseVarId (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:13412:10)
+      at JSXParserMixin.parseVar (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:13383:12)
+      at JSXParserMixin.parseVarStatement (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:13230:10)
+      at JSXParserMixin.parseStatementContent (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:12851:23)
+      at JSXParserMixin.parseStatementLike (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:12767:17)
+      at JSXParserMixin.parseStatementListItem (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:12747:17)
+      at JSXParserMixin.parseBlockOrModuleBlockBody (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:13316:61)
+      at JSXParserMixin.parseBlockBody (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:13309:10)
+      at JSXParserMixin.parseBlock (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:13297:10)
+      at JSXParserMixin.parseFunctionBody (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:12100:24)
+      at JSXParserMixin.parseFunctionBodyAndFinish (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:12086:10)
+      at C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:13445:12
+      at JSXParserMixin.withSmartMixTopicForbiddingContext (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:12403:14)
+      at JSXParserMixin.parseFunction (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:13444:10)
+      at JSXParserMixin.parseExportDefaultExpression (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:13907:19)
+      at JSXParserMixin.parseExport (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:13828:25)
+      at JSXParserMixin.parseStatementContent (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:12878:27)
+      at JSXParserMixin.parseStatementLike (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:12767:17)
+      at JSXParserMixin.parseModuleItem (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:12744:17)
+      at JSXParserMixin.parseBlockOrModuleBlockBody (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:13316:36)
+      at JSXParserMixin.parseBlockBody (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:13309:10)
+      at JSXParserMixin.parseProgram (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:12622:10)
+      at JSXParserMixin.parseTopLevel (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:12612:25)
+      at JSXParserMixin.parse (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:14488:25)
+      at parse (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:14522:38)
+      at parser (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\core\lib\parser\index.js:41:34)
+      at parser.next (<anonymous>)
+      at normalizeFile (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\core\lib\transformation\normalize-file.js:64:37)
+      at normalizeFile.next (<anonymous>)
+      at run (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\core\lib\transformation\index.js:22:50)
+      at run.next (<anonymous>)
+      at transform (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\core\lib\transform.js:22:33)
+      at transform.next (<anonymous>)
+      at step (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\gensync\index.js:261:32)
+      at C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\gensync\index.js:273:13
+      at async.call.result.err.err (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\gensync\index.js:223:11)
+      at C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\gensync\index.js:189:28
+      at C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\core\lib\gensync-utils\async.js:67:7
+      at C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\gensync\index.js:113:33
+      at step (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\gensync\index.js:287:14)
+      at C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\gensync\index.js:273:13
+      at async.call.result.err.err (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\gensync\index.js:223:11)
+[2m23:18:15[22m [31m[1m[vite][22m[39m [31mInternal server error: C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\src\App.jsx: Identifier 'saveActivityLog' has already been declared. (583:8)
+
+[0m [90m 581 |[31m
+ [90m 582 |[31m   [90m// 4. Protocolo de Segurança e Log Forense[31m
+[31m[1m>[22m[31m[90m 583 |[31m   [36mconst[31m saveActivityLog [33m=[31m [36masync[31m (detection[33m,[31m image[33m,[31m label[33m,[31m camId [33m=[31m [35m1[31m[33m,[31m isAuthorized [33m=[31m [36mfalse[31m) [33m=>[31m {
+ [90m     |[31m         [31m[1m^[22m[31m
+ [90m 584 |[31m     [90m// 1. Telegram (Resiliente)[31m
+ [90m 585 |[31m     [36mif[31m ([33m![31misAuthorized) {
+ [90m 586 |[31m       [36mtry[31m {[0m[39m
+  Plugin: [35mvite:react-babel[39m
+  File: [36mC:/Users/DELL/.gemini/antigravity/scratch/gogoma-face-auth/client/src/App.jsx[39m:583:8
+[33m  581|  
+  582|    // 4. Protocolo de Segurança e Log Forense
+  583|    const saveActivityLog = async (detection, image, label, camId = 1, isAuthorized = false) => {
+     |          ^
+  584|      // 1. Telegram (Resiliente)
+  585|      if (!isAuthorized) {[39m
+      at constructor (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:365:19)
+      at JSXParserMixin.raise (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:6599:19)
+      at ScopeHandler.checkRedeclarationInScope (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:1619:19)
+      at ScopeHandler.declareName (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:1585:12)
+      at JSXParserMixin.declareNameFromIdentifier (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:7567:16)
+      at JSXParserMixin.checkIdentifier (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:7563:12)
+      at JSXParserMixin.checkLVal (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:7500:12)
+      at JSXParserMixin.parseVarId (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:13412:10)
+      at JSXParserMixin.parseVar (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:13383:12)
+      at JSXParserMixin.parseVarStatement (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:13230:10)
+      at JSXParserMixin.parseStatementContent (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:12851:23)
+      at JSXParserMixin.parseStatementLike (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:12767:17)
+      at JSXParserMixin.parseStatementListItem (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:12747:17)
+      at JSXParserMixin.parseBlockOrModuleBlockBody (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:13316:61)
+      at JSXParserMixin.parseBlockBody (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:13309:10)
+      at JSXParserMixin.parseBlock (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:13297:10)
+      at JSXParserMixin.parseFunctionBody (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:12100:24)
+      at JSXParserMixin.parseFunctionBodyAndFinish (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:12086:10)
+      at C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:13445:12
+      at JSXParserMixin.withSmartMixTopicForbiddingContext (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:12403:14)
+      at JSXParserMixin.parseFunction (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:13444:10)
+      at JSXParserMixin.parseExportDefaultExpression (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:13907:19)
+      at JSXParserMixin.parseExport (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:13828:25)
+      at JSXParserMixin.parseStatementContent (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:12878:27)
+      at JSXParserMixin.parseStatementLike (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:12767:17)
+      at JSXParserMixin.parseModuleItem (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:12744:17)
+      at JSXParserMixin.parseBlockOrModuleBlockBody (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:13316:36)
+      at JSXParserMixin.parseBlockBody (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:13309:10)
+      at JSXParserMixin.parseProgram (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:12622:10)
+      at JSXParserMixin.parseTopLevel (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:12612:25)
+      at JSXParserMixin.parse (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:14488:25)
+      at parse (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\parser\lib\index.js:14522:38)
+      at parser (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\core\lib\parser\index.js:41:34)
+      at parser.next (<anonymous>)
+      at normalizeFile (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\core\lib\transformation\normalize-file.js:64:37)
+      at normalizeFile.next (<anonymous>)
+      at run (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\core\lib\transformation\index.js:22:50)
+      at run.next (<anonymous>)
+      at transform (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\core\lib\transform.js:22:33)
+      at transform.next (<anonymous>)
+      at step (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\gensync\index.js:261:32)
+      at C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\gensync\index.js:273:13
+      at async.call.result.err.err (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\gensync\index.js:223:11)
+      at C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\gensync\index.js:189:28
+      at C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\@babel\core\lib\gensync-utils\async.js:67:7
+      at C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\gensync\index.js:113:33
+      at step (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\gensync\index.js:287:14)
+      at C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\gensync\index.js:273:13
+      at async.call.result.err.err (C:\Users\DELL\.gemini\antigravity\scratch\gogoma-face-auth\client\node_modules\gensync\index.js:223:11)
+[2m23:19:53[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/App.jsx, /src/index.css[22m
+[2m23:20:16[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/App.jsx, /src/index.css[22m

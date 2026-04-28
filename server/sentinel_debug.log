@@ -1,0 +1,81 @@
+[2026-04-27T18:45:39.775Z] LOG: =======================================================
+[2026-04-27T18:45:40.099Z] LOG: [Gogoma Sentinel] SERVIDOR ATIVO EM http://127.0.0.1:3001
+[2026-04-27T18:45:40.099Z] LOG: =======================================================
+[2026-04-27T18:50:02.249Z] LOG: [API] Solicitando troca de IP para:  http://10.227.236.127:8080/video
+[2026-04-27T18:50:02.440Z] LOG: [Gogoma] SUCESSO: IP salvo.
+[2026-04-27T18:50:47.365Z] LOG: [API] Solicitando troca de IP para:  http://10.227.236.127:8080/video
+[2026-04-27T18:50:47.365Z] LOG: [Gogoma] SUCESSO: IP salvo.
+[2026-04-27T19:33:05.476Z] LOG: =======================================================
+[2026-04-27T19:33:05.479Z] LOG: [Gogoma Sentinel] SERVIDOR ATIVO EM http://127.0.0.1:3001
+[2026-04-27T19:33:05.480Z] LOG: =======================================================
+[2026-04-27T20:23:17.974Z] LOG: [API] Solicitando troca de IP para:  http://10.227.236.127:8080/video
+[2026-04-27T20:23:17.983Z] LOG: [Gogoma] SUCESSO: IP salvo.
+[2026-04-27T20:28:25.485Z] LOG: [API] Solicitando troca de IP para: 10.227.236.127
+[2026-04-27T20:28:25.487Z] LOG: [Gogoma] SUCESSO: IP salvo.
+[2026-04-27T20:28:51.833Z] LOG: [API] Solicitando troca de IP para: 10.227.236.127
+[2026-04-27T20:28:51.835Z] LOG: [Gogoma] SUCESSO: IP salvo.
+[2026-04-27T20:30:53.486Z] LOG: [API] Solicitando troca de IP para: 10.227.236.127
+[2026-04-27T20:30:53.489Z] LOG: [Gogoma] SUCESSO: IP salvo.
+[2026-04-27T20:53:30.634Z] LOG: =======================================================
+[2026-04-27T20:53:30.644Z] LOG: [Gogoma Sentinel] SERVIDOR ATIVO EM http://127.0.0.1:3001
+[2026-04-27T20:53:30.645Z] LOG: =======================================================
+[2026-04-27T20:53:51.895Z] LOG: [API] Solicitando troca de IP para: 10.227.236.127
+[2026-04-27T20:53:51.900Z] LOG: [Gogoma] SUCESSO: IP salvo.
+[2026-04-27T20:53:52.132Z] LOG: [API] Solicitando troca de IP para: 10.227.236.127
+[2026-04-27T20:53:52.134Z] LOG: [Gogoma] SUCESSO: IP salvo.
+[2026-04-27T20:53:58.332Z] LOG: [API] Solicitando troca de IP para: 10.227.236.127
+[2026-04-27T20:53:58.334Z] LOG: [Gogoma] SUCESSO: IP salvo.
+[2026-04-27T20:55:02.282Z] LOG: [API] Solicitando troca de IP para: 10.227.236.127
+[2026-04-27T20:55:02.566Z] LOG: [Gogoma] SUCESSO: IP salvo.
+[2026-04-27T21:00:57.083Z] LOG: [API] Solicitando troca de IP para: 10.227.236.127
+[2026-04-27T21:00:57.383Z] LOG: [Gogoma] SUCESSO: IP salvo.
+[2026-04-27T21:01:48.325Z] LOG: [API] Solicitando troca de IP para: http://10.227.236.127:8080/video
+[2026-04-27T21:01:48.329Z] LOG: [Gogoma] SUCESSO: IP salvo.
+[2026-04-27T21:11:07.099Z] LOG: =======================================================
+[2026-04-27T21:11:07.115Z] LOG: [Gogoma Sentinel] SERVIDOR ATIVO EM http://127.0.0.1:3001
+[2026-04-27T21:11:07.115Z] LOG: =======================================================
+[2026-04-27T21:11:21.905Z] LOG: [API] Solicitando troca de IP para: http://10.227.236.127:8080/video
+[2026-04-27T21:11:21.907Z] LOG: [Gogoma] SUCESSO: IP salvo.
+[2026-04-27T21:12:18.567Z] LOG: [API] Solicitando troca de IP para: http://10.227.236.127:8080/video
+[2026-04-27T21:12:18.574Z] LOG: [Gogoma] SUCESSO: IP salvo.
+[2026-04-27T21:15:14.849Z] LOG: [API] Solicitando troca de IP para: http://10.227.236.127:8080/video
+[2026-04-27T21:15:14.851Z] LOG: [Gogoma] SUCESSO: IP salvo.
+[2026-04-27T21:20:57.618Z] LOG: [API] Solicitando troca de IP para: http://10.227.236.127:8080/video
+[2026-04-27T21:20:57.624Z] LOG: [Gogoma] SUCESSO: IP salvo.
+[2026-04-28T07:17:11.402Z] LOG: [API] Solicitando troca de IP para: http://10.227.236.127:8080/video
+[2026-04-28T07:17:11.408Z] LOG: [Gogoma] SUCESSO: IP salvo.
+[2026-04-28T07:38:17.346Z] LOG: =======================================================
+[2026-04-28T07:38:17.349Z] LOG: [Gogoma Sentinel] SERVIDOR ATIVO EM http://127.0.0.1:3001
+[2026-04-28T07:38:17.349Z] LOG: =======================================================
+[2026-04-28T07:44:22.505Z] LOG: [API] Solicitando troca de IP para: http://10.227.236.127:8080/video
+[2026-04-28T07:44:22.507Z] LOG: [Gogoma] SUCESSO: IP salvo.
+[2026-04-28T07:44:24.858Z] LOG: =======================================================
+[2026-04-28T07:44:24.953Z] LOG: [Gogoma Sentinel] SERVIDOR ATIVO EM http://127.0.0.1:3001
+[2026-04-28T07:44:24.989Z] LOG: =======================================================
+[2026-04-28T07:49:56.586Z] LOG: =======================================================
+[2026-04-28T07:49:56.589Z] LOG: [Gogoma Sentinel] SERVIDOR ATIVO EM http://127.0.0.1:3001
+[2026-04-28T07:49:56.589Z] LOG: =======================================================
+[2026-04-28T07:52:32.878Z] LOG: [Gogoma] Configuração atualizada: Armed=true, Panic=undefined
+[2026-04-28T07:52:38.873Z] LOG: =======================================================
+[2026-04-28T07:52:39.038Z] LOG: [Gogoma Sentinel] SERVIDOR ATIVO EM http://127.0.0.1:3001
+[2026-04-28T07:52:39.040Z] LOG: =======================================================
+[2026-04-28T07:52:41.324Z] LOG: [Gogoma] Configuração atualizada: Armed=true, Panic=undefined
+[2026-04-28T07:52:53.082Z] LOG: =======================================================
+[2026-04-28T07:52:53.090Z] LOG: [Gogoma Sentinel] SERVIDOR ATIVO EM http://127.0.0.1:3001
+[2026-04-28T07:52:53.090Z] LOG: =======================================================
+[2026-04-28T07:54:55.669Z] LOG: [Gogoma] Configuração atualizada: Armed=true, Panic=true
+[2026-04-28T07:55:09.907Z] LOG: =======================================================
+[2026-04-28T07:55:09.918Z] LOG: [Gogoma Sentinel] SERVIDOR ATIVO EM http://127.0.0.1:3001
+[2026-04-28T07:55:09.942Z] LOG: =======================================================
+[2026-04-28T08:01:43.673Z] LOG: [Gogoma] Configuração atualizada: Armed=true, Panic=false
+[2026-04-28T08:01:48.505Z] LOG: =======================================================
+[2026-04-28T08:01:48.574Z] LOG: [Gogoma Sentinel] SERVIDOR ATIVO EM http://127.0.0.1:3001
+[2026-04-28T08:01:48.590Z] LOG: =======================================================
+[2026-04-28T08:01:48.859Z] LOG: [Gogoma] Configuração atualizada: Armed=true, Panic=false
+[2026-04-28T08:01:52.284Z] LOG: =======================================================
+[2026-04-28T08:01:52.288Z] LOG: [Gogoma Sentinel] SERVIDOR ATIVO EM http://127.0.0.1:3001
+[2026-04-28T08:01:52.288Z] LOG: =======================================================
+[2026-04-28T08:05:25.782Z] LOG: [Gogoma] Configuração atualizada: Armed=true, Panic=false
+[2026-04-28T08:05:34.121Z] LOG: =======================================================
+[2026-04-28T08:05:34.642Z] LOG: [Gogoma Sentinel] SERVIDOR ATIVO EM http://127.0.0.1:3001
+[2026-04-28T08:05:34.742Z] LOG: =======================================================

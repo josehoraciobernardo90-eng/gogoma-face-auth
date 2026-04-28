@@ -1,0 +1,8 @@
+{
+  "scripts": {
+    "dev": "powershell ./start.ps1"
+  },
+  "devDependencies": {
+    "vite-plugin-pwa": "^1.2.0"
+  }
+}

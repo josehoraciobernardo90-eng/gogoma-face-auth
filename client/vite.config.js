@@ -30,6 +30,13 @@ export default defineConfig({
   server: {
     port: 7777,
     host: true,
+    proxy: {
+      '/api': {
+        target: 'http://127.0.0.1:3001',
+        changeOrigin: true,
+        secure: false,
+      }
+    }
   },
   optimizeDeps: {
     exclude: ['face-api.js']

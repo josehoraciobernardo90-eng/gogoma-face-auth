@@ -754,7 +754,7 @@ export default function GogomaSentinelFirebase() {
   console.log("🖥️ [GOGOMA] Renderizando UI Principal | View:", view, "Models Loaded:", isModelsLoaded);
   return (
     <ErrorBoundary>
-      <div className="min-h-screen bg-[#0a0a0c] text-zinc-100 font-sans p-6 overflow-hidden flex flex-col">
+      <div className="min-h-screen bg-[#0a0a0c] text-zinc-100 font-sans p-2 md:p-6 pb-24 md:pb-6 overflow-x-hidden flex flex-col relative">
         {/* BARRA DE DIAGNÓSTICO GOGOMA */}
         <div className="fixed top-0 left-0 right-0 z-[9999] bg-blue-600 text-white text-[10px] font-black px-4 py-1 flex justify-between items-center shadow-2xl">
           <span>GOGOMA SENTINEL V3 // DIAGNÓSTICO ATIVO</span>
@@ -814,18 +814,15 @@ export default function GogomaSentinelFirebase() {
                 const payload = { isArmed: newArmed };
                 if (!newArmed) payload.isPanic = false;
 
-                fetch('/api/config', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify(payload)
-                }).catch(e => console.error("Erro ao sincronizar estado armado:", e));
+                setDoc(doc(db, 'system', 'config'), payload, { merge: true })
+                  .catch(e => console.error("Erro ao sincronizar estado armado:", e));
               }}
               className={`px-4 py-2 rounded-xl text-sm font-black transition-all flex items-center gap-2 shadow-xl border ${isArmed ? 'bg-blue-600 text-white border-blue-400 animate-pulse' : 'bg-zinc-800 text-zinc-500 border-zinc-700'}`}>
               {isArmed ? <Lock size={16} /> : <Unlock size={16} />}
               {isArmed ? 'VIGILÂNCIA ATIVA' : 'SISTEMA DESARMADO'}
             </button>
 
-            <div className="flex bg-white/5 p-1 rounded-xl border border-white/5">
+            <div className="hidden md:flex bg-white/5 p-1 rounded-xl border border-white/5">
               <button onClick={() => setView('monitor')} className={`px-4 py-2 rounded-lg text-sm font-bold transition-all flex items-center gap-2 ${view === 'monitor' ? 'bg-blue-600 text-white shadow-lg' : 'text-zinc-400 hover:text-zinc-200'}`}><Layout size={16}/> Monitor</button>
               <button onClick={() => setView('register')} className={`px-4 py-2 rounded-lg text-sm font-bold transition-all flex items-center gap-2 ${view === 'register' ? 'bg-blue-600 text-white shadow-lg' : 'text-zinc-400 hover:text-zinc-200'}`}><UserPlus size={16}/> Cadastro</button>
               <button onClick={() => setView('search')} className={`px-4 py-2 rounded-lg text-sm font-bold transition-all flex items-center gap-2 ${view === 'search' ? 'bg-blue-600 text-white shadow-lg' : 'text-zinc-400 hover:text-zinc-200'}`}><Search size={16}/> Busca Histórica</button>
@@ -835,12 +832,9 @@ export default function GogomaSentinelFirebase() {
                   const newPanic = !isPanic;
                   if (!newPanic && audioCtxRef.current) audioCtxRef.current.resume();
                   setIsPanic(newPanic);
-                  // Sincroniza com o servidor
-                  fetch('/api/config', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ isPanic: newPanic, manual: true })
-                  }).catch(e => console.error("Erro ao sincronizar pânico:", e));
+                  // Sincroniza com o servidor Nuvem
+                  setDoc(doc(db, 'system', 'config'), { isPanic: newPanic, manual: true }, { merge: true })
+                    .catch(e => console.error("Erro ao sincronizar pânico:", e));
                 }} 
                 className={`px-6 py-2 rounded-xl text-xs font-black transition-all flex items-center gap-2 border-2 shadow-[0_0_20px_rgba(220,38,38,0.4)] ${isPanic ? 'bg-red-600 text-white animate-pulse border-white' : 'bg-red-600/10 text-red-500 border-red-500/30 hover:bg-red-600 hover:text-white'}`}
               >
@@ -1099,6 +1093,41 @@ export default function GogomaSentinelFirebase() {
             </div>
           </div>
         )}
+
+        {/* BOTTOM NAVIGATION BAR (ANDROID APP FEEL) */}
+        <div className="md:hidden fixed bottom-0 left-0 right-0 bg-[#0a0a0c]/90 backdrop-blur-2xl border-t border-white/10 z-[9999] px-2 py-3 flex justify-around items-center">
+          <button onClick={() => setView('monitor')} className={`flex flex-col items-center gap-1 p-2 ${view === 'monitor' ? 'text-blue-500' : 'text-zinc-500'}`}>
+            <Layout size={24} />
+            <span className="text-[10px] font-bold">Monitor</span>
+          </button>
+          <button onClick={() => setView('register')} className={`flex flex-col items-center gap-1 p-2 ${view === 'register' ? 'text-blue-500' : 'text-zinc-500'}`}>
+            <UserPlus size={24} />
+            <span className="text-[10px] font-bold">Cadastro</span>
+          </button>
+          
+          {/* BOTÃO FLUTUANTE DE PÂNICO NO CENTRO */}
+          <button 
+            onClick={() => {
+              const newPanic = !isPanic;
+              if (!newPanic && audioCtxRef.current) audioCtxRef.current.resume();
+              setIsPanic(newPanic);
+              setDoc(doc(db, 'system', 'config'), { isPanic: newPanic, manual: true }, { merge: true }).catch(e => console.error(e));
+            }} 
+            className={`flex flex-col items-center justify-center -mt-8 w-16 h-16 rounded-full border-4 border-[#0a0a0c] shadow-[0_0_20px_rgba(220,38,38,0.4)] ${isPanic ? 'bg-red-600 text-white animate-pulse' : 'bg-red-950 text-red-500'}`}
+          >
+            <Zap size={28} />
+          </button>
+
+          <button onClick={() => setView('search')} className={`flex flex-col items-center gap-1 p-2 ${view === 'search' ? 'text-blue-500' : 'text-zinc-500'}`}>
+            <History size={24} />
+            <span className="text-[10px] font-bold">Log</span>
+          </button>
+          <button onClick={() => setView('admin')} className={`flex flex-col items-center gap-1 p-2 ${view === 'admin' ? 'text-blue-500' : 'text-zinc-500'}`}>
+            <Settings size={24} />
+            <span className="text-[10px] font-bold">Gestão</span>
+          </button>
+        </div>
+
       </div>
     </ErrorBoundary>
   );
@@ -1560,3 +1589,4 @@ function AdminView({ onSync, setSelectedImage }) {
     </div>
   );
 }
+

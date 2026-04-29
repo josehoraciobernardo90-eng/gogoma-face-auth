@@ -68,6 +68,13 @@ app.post('/api/config', (req, res) => {
     const { cameraIp, isArmed, isPanic } = req.body;
     try {
         const config = JSON.parse(fs.readFileSync(CONFIG_FILE));
+        
+        // Bloqueio de Pânico Automático se estiver desarmado (Manual ignorado)
+        if (isPanic === true && isArmed === undefined && config.isArmed === false && !req.body.manual) {
+            console.log("[SENTINEL] Tentativa de pânico automático bloqueada (Sistema Desarmado)");
+            return res.json({ success: false, message: "Bloqueado: Sistema Desarmado" });
+        }
+
         if (cameraIp !== undefined) config.cameraIp = cameraIp;
         if (isArmed !== undefined) config.isArmed = isArmed;
         if (isPanic !== undefined) config.isPanic = isPanic;
@@ -112,6 +119,16 @@ app.post('/api/logs', (req, res) => {
         res.json({ success: true });
     } catch (error) {
         console.error("Erro ao salvar log local:", error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.delete('/api/logs', (req, res) => {
+    try {
+        fs.writeFileSync(LOGS_FILE, JSON.stringify([]));
+        console.log("[Gogoma] Histórico de logs locais limpo.");
+        res.json({ success: true });
+    } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });

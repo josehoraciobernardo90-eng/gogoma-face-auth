@@ -5,6 +5,29 @@ import { collection, addDoc, getDocs, query, orderBy, limit, serverTimestamp, de
 import { ref, uploadString, getDownloadURL } from 'firebase/storage';
 import { Camera, Users, History, CheckCircle, AlertCircle, Loader2, UserPlus, Shield, Search, Upload, RefreshCw, Trash2, Settings, Maximize, Minimize, ZoomIn, ZoomOut, Zap, Layout, Lock, Unlock } from 'lucide-react';
 
+// --- COMPONENTE DE SEGURANÇA (ERROR BOUNDARY) ---
+export class ErrorBoundary extends React.Component {
+  constructor(props) { super(props); this.state = { hasError: false, error: null }; }
+  static getDerivedStateFromError(error) { return { hasError: true, error }; }
+  componentDidCatch(error, errorInfo) { console.error("CRASH NO SENTINEL:", error, errorInfo); }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="min-h-screen bg-[#0a0a0c] flex flex-col items-center justify-center text-white p-10 text-center">
+          <AlertCircle size={80} className="text-red-500 mb-6 animate-pulse" />
+          <h1 className="text-4xl font-black mb-4">SISTEMA COMPROMETIDO</h1>
+          <p className="text-zinc-500 font-mono mb-8 max-w-lg">O núcleo do Sentinel encontrou um erro de execução. A integridade dos dados foi mantida, mas o motor visual falhou.</p>
+          <pre className="bg-red-500/10 border border-red-500/30 p-4 rounded-xl text-left text-[10px] text-red-400 overflow-auto max-w-2xl mb-8">
+            {this.state.error?.stack}
+          </pre>
+          <button onClick={() => window.location.reload()} className="bg-blue-600 px-8 py-3 rounded-2xl font-black hover:bg-blue-500 transition-all">REINICIAR NÚCLEO</button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 export default function GogomaSentinelFirebase() {
   const [view, setView] = useState('monitor');
   const [isModelsLoaded, setIsModelsLoaded] = useState(false);
@@ -36,9 +59,17 @@ export default function GogomaSentinelFirebase() {
   const containerRef = useRef(null);
   const sirenRef = useRef(null); // Ref para parar a sirene
   const detectionBuffer = useRef({}); // { camId: [name1, name2, ...] }
+  const detectionsByCamRef = useRef({}); // Deteções por câmera
   const motionCanvasRef = useRef(null); // Canvas persistente para evitar travamentos
   const prevFrameRef = useRef(null); 
+  const audioSourceRef = useRef(null); // Ref para o áudio
 
+
+  const isArmedRef = useRef(isArmed);
+  const isPanicRef = useRef(isPanic);
+
+  useEffect(() => { isArmedRef.current = isArmed; }, [isArmed]);
+  useEffect(() => { isPanicRef.current = isPanic; }, [isPanic]);
 
   const saveCameras = (newCameras) => {
     setCameras(newCameras);
@@ -54,31 +85,8 @@ export default function GogomaSentinelFirebase() {
   useEffect(() => {
     const handleFullscreenChange = () => setIsFullscreen(!!document.fullscreenElement);
     document.addEventListener('fullscreenchange', handleFullscreenChange);
-    
-    // Poll config state every 5 seconds for synchronization
-    const syncInterval = setInterval(() => {
-      fetch('/api/config')
-        .then(res => res.json())
-        .then(data => {
-          if (data.isArmed !== undefined) setIsArmed(!!data.isArmed);
-          if (data.isPanic !== undefined) setIsPanic(!!data.isPanic);
-          if (data.cameraIp && data.cameraIp !== "0") {
-             setCameraIp(data.cameraIp);
-             // Solo actualiza cameras si es la primera vez o cambió radicalmente
-             setCameras(prev => {
-                if (prev.length === 0 || !prev[0].url.includes(data.cameraIp)) {
-                   return [{ id: 1, url: `http://${data.cameraIp}:8080/video`, zoom: 1 }];
-                }
-                return prev;
-             });
-          }
-        })
-        .catch(err => console.warn("Erro ao sincronizar config:", err));
-    }, 5000);
-
     return () => {
       document.removeEventListener('fullscreenchange', handleFullscreenChange);
-      clearInterval(syncInterval);
     };
   }, []);
 
@@ -213,24 +221,51 @@ export default function GogomaSentinelFirebase() {
 
   useEffect(() => {
     const loadIA = async () => {
-      const MODEL_URL = 'https://raw.githubusercontent.com/justadudewhohacks/face-api.js/master/weights';
-      try {
-        setStatus('Calibrando Motores de Alta Precisão...');
-        await Promise.all([
-          faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
-          faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL),
-          faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
-          faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL)
-        ]);
-        setIsModelsLoaded(true);
-        setStatus('Sentinel Ativo');
-        try { await syncWithFirebase(); } catch (e) { console.warn("Firebase offline"); }
-      } catch (e) {
-        console.error("Erro IA:", e);
-        setStatus('Erro de Conexão IA');
+      console.log("🚀 [GOGOMA] Iniciando Carregamento da IA...");
+      const MODELS_LIST = ['/models', 'https://raw.githubusercontent.com/justadudewhohacks/face-api.js/master/weights'];
+      
+      for (const url of MODELS_LIST) {
+        try {
+          console.log(`📡 [GOGOMA] Tentando carregar de: ${url}`);
+          setStatus(`Calibrando IA (${url === '/models' ? 'Local' : 'Nuvem'})...`);
+          
+          await faceapi.nets.tinyFaceDetector.loadFromUri(url);
+          console.log("✅ TinyFaceDetector OK");
+          setStatus("Calibrando IA: 25%");
+          
+          await faceapi.nets.ssdMobilenetv1.loadFromUri(url);
+          console.log("✅ SsdMobilenetv1 OK");
+          setStatus("Calibrando IA: 50%");
+          
+          await faceapi.nets.faceLandmark68Net.loadFromUri(url);
+          console.log("✅ FaceLandmark68 OK");
+          setStatus("Calibrando IA: 75%");
+          
+          await faceapi.nets.faceRecognitionNet.loadFromUri(url);
+          console.log("✅ FaceRecognitionNet OK");
+          
+          setIsModelsLoaded(true);
+          setStatus("Sentinel Ativo");
+          console.log("🌟 [GOGOMA] Modelos Carregados!");
+          
+          try { 
+            await syncWithFirebase(); 
+          } catch (e) { 
+            console.warn("⚠️ Firebase Sync falhou", e); 
+          }
+          return;
+        } catch (e) {
+          console.error(`❌ Erro em ${url}:`, e);
+          if (url === MODELS_LIST[MODELS_LIST.length - 1]) {
+            setStatus("Erro Crítico: Falha Total de Modelos");
+          }
+        }
       }
     };
-    loadIA();
+    const timer = setTimeout(() => {
+      loadIA();
+    }, 1000);
+    return () => clearTimeout(timer);
   }, []);
 
   // 3. Vigilante de Latência (Watchdog) - Mata o atraso do áudio em tempo real
@@ -343,8 +378,8 @@ export default function GogomaSentinelFirebase() {
       }).filter(Boolean);
       
       if (labeledDescriptors.length > 0) {
-        // Tolerância de 0.7 para reconhecimento resiliente
-        setFaceMatcher(new faceapi.FaceMatcher(labeledDescriptors, 0.7));
+        // Tolerância de 0.5 para reconhecimento rigoroso (Evita falsos positivos)
+        setFaceMatcher(new faceapi.FaceMatcher(labeledDescriptors, 0.5));
         setDebugStatus(`IA: ${labeledDescriptors.length} Membros Ativos`);
       } else {
         setFaceMatcher(null);
@@ -358,7 +393,7 @@ export default function GogomaSentinelFirebase() {
 
   // 3. Motor de Duas Velocidades: Vídeo Fluido (FPS) + Radar IA (Segundo Plano)
   useEffect(() => {
-    let iaInterval;
+    let iaTimeout;
     let animationFrame;
     
     if (isModelsLoaded && view === 'monitor') {
@@ -371,6 +406,7 @@ export default function GogomaSentinelFirebase() {
           if (video && canvas) {
             try {
               const ctx = canvas.getContext('2d');
+              if (!ctx) return;
               
               // Sincronizar tamanho do Canvas com o tamanho de exibição do vídeo (Dual-Layer Sync)
               if (canvas.width !== video.clientWidth || canvas.height !== video.clientHeight) {
@@ -464,7 +500,6 @@ export default function GogomaSentinelFirebase() {
 
       // --- LOOP 2: RADAR IA (SEGUNDO PLANO - ULTRA-OTIMIZADO) ---
       let currentCamIndex = 0;
-      let iaTimeout;
 
       const runIA = async () => {
         if (cameras.length === 0 || view !== 'monitor') {
@@ -483,8 +518,8 @@ export default function GogomaSentinelFirebase() {
         }
 
         try {
-          // MOTOR TÁTICO OTIMIZADO: 224 é o equilíbrio perfeito entre velocidade e precisão
-          const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions({ inputSize: 224, scoreThreshold: 0.1 }))
+          // MOTOR TÁTICO OTIMIZADO (160px para Velocidade Máxima, scoreThreshold reduzido para alvos distantes)
+          const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions({ inputSize: 160, scoreThreshold: 0.35 }))
             .withFaceLandmarks().withFaceDescriptors();
 
           // --- DETECÇÃO DE MOVIMENTO (OTIMIZADA E ULTRA-SENSÍVEL) ---
@@ -507,36 +542,21 @@ export default function GogomaSentinelFirebase() {
                 // Compara apenas o canal verde para velocidade e sensibilidade
                 diff += Math.abs(currentFrame[j+1] - prevFrameRef.current[j+1]);
               }
-              // Limiar de movimento para captar vultos distantes
-              if (diff > 25000) hasSignificantMotion = true; 
+              // Limiar de movimento reduzido drasticamente para captar vultos e pessoas distantes
+              if (diff > 5000) hasSignificantMotion = true; 
             }
             prevFrameRef.current = currentFrame;
           }
 
-          // --- GATILHO AUTOMÁTICO DE PÂNICO (IMEDIATO) ---
-          if (isArmed && !isPanic && (detections.length > 0 || hasSignificantMotion)) {
-            console.log("🚨 [GOGOMA] MOVIMENTO OU PESSOA DETECTADA! ATIVANDO PÂNICO AUTOMÁTICO...");
-            setDebugStatus(`INTRUSO DETECTADO!`);
-            setIsPanic(true);
-            
-            fetch('/api/config', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ isPanic: true })
-            }).catch(e => console.error("Erro ao sincronizar pânico:", e));
-          }
-
           if (detections.length > 0) {
             setDebugStatus(`Alvo(s) em movimento...`);
-
 
             const dims = { width: canvas.width, height: canvas.height };
             const resizedDetections = faceapi.resizeResults(detections, dims);
 
             const newDetections = resizedDetections.map(resized => {
               const box = resized.detection.box;
-              if (box.width < 40) return null; 
-// ... (rest of the logic remains)
+              if (box.width < 20) return null; // Limiar reduzido de 70 para 20 para permitir detecção a longa distância
               let label = 'Desconhecido';
               let credentials = null;
               let isRecognized = false;
@@ -547,7 +567,6 @@ export default function GogomaSentinelFirebase() {
                 
                 if (!detectionBuffer.current[cam.id]) detectionBuffer.current[cam.id] = [];
                 detectionBuffer.current[cam.id].push(match.label);
-                // Buffer de 8 frames para equilíbrio entre velocidade e precisão
                 if (detectionBuffer.current[cam.id].length > 8) detectionBuffer.current[cam.id].shift();
 
                 const counts = detectionBuffer.current[cam.id].reduce((acc, val) => {
@@ -556,7 +575,6 @@ export default function GogomaSentinelFirebase() {
                 }, {});
                 const bestLabel = Object.keys(counts).reduce((a, b) => counts[a] > counts[b] ? a : b);
                 
-                // Confirmar se 3 de 8 frames coincidem
                 if (detectionBuffer.current[cam.id].length >= 3) {
                   if (bestLabel !== 'unknown' && counts[bestLabel] >= 3) {
                     try { 
@@ -581,25 +599,43 @@ export default function GogomaSentinelFirebase() {
 
             detectionsByCamRef.current[cam.id] = newDetections;
             
-            // ATUALIZAÇÃO DO STATUS PRINCIPAL (Segura)
             try {
               const lastRec = newDetections.find(d => d.isRecognized);
               if (lastRec && lastRec.credentials) {
-                const name = lastRec.credentials.name || 'Membro';
-                const cargo = lastRec.credentials.cargo || 'Registado';
-                setIdentifiedName(`${name} | ${cargo}`);
+                setIdentifiedName(`${lastRec.credentials.name} | ${lastRec.credentials.cargo}`);
               } else if (newDetections.length > 0) {
-                const isVerifying = newDetections.some(d => d.verifying);
-                setIdentifiedName(isVerifying ? 'Identificando...' : 'Desconhecido');
+                setIdentifiedName(newDetections.some(d => d.verifying) ? 'Identificando...' : 'Desconhecido');
               } else {
                 setIdentifiedName('');
               }
             } catch (err) {
-              console.error("Erro no Status:", err);
               setIdentifiedName('Erro de Sincronização');
             }
 
-            // Gatilho de Captura
+            // GATILHO DE PANICO E CAPTURA (COM GRACE PERIOD)
+            const currentTimeMs = Date.now();
+            const gracePeriodMs = 60000; 
+            const inGracePeriod = (currentTimeMs - lastResidentRef.current) < gracePeriodMs;
+
+            const hasUnrecognizedIntruder = newDetections.some(d => !d.isRecognized && !d.verifying);
+            const hasResident = newDetections.some(d => d.isRecognized);
+
+            if (hasResident) {
+                if (lastResidentRef.current === 0 || (currentTimeMs - lastResidentRef.current) > 5000) {
+                    console.log("🛡️ [GOGOMA] RESIDENTE IDENTIFICADO. Protocolo de Cortesia Ativado (Grace Period 60s).");
+                }
+                lastResidentRef.current = currentTimeMs;
+            }
+
+            if (isArmedRef.current && !isPanicRef.current && !inGracePeriod) {
+                if (hasUnrecognizedIntruder) {
+                    console.log("🚨 [GOGOMA] INTRUSO DETECTADO FORA DO GRACE PERIOD!");
+                    setIsPanic(true);
+                    isPanicRef.current = true;
+                    fetch('/api/config', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ isPanic: true }) }).catch(() => {});
+                }
+            }
+
             newDetections.forEach(det => {
                if (isArmed && (!window.lastSaveTime || Date.now() - window.lastSaveTime > 15000)) {
                   window.lastSaveTime = Date.now();
@@ -610,16 +646,22 @@ export default function GogomaSentinelFirebase() {
                   saveActivityLog(det, shot, det.label, i + 1, det.isRecognized);
                }
             });
-
           } else if (cam) {
             detectionsByCamRef.current[cam.id] = [];
+            // Detecção de Movimento mesmo sem rostos
+            const currentTimeMs = Date.now();
+            if (isArmedRef.current && !isPanicRef.current && !inGracePeriod && hasSignificantMotion) {
+                // Apenas logamos o movimento, mas não disparamos o pânico bruto para evitar animais/aves.
+                // O pânico agora depende da detecção de ROSTO (JS) ou CORPO HUMANO (Python).
+                console.log("☁️ [GOGOMA] Movimento detectado (Analisando biometria...)");
+            }
           }
         } catch(e) { 
           console.error("Erro IA:", e);
           setDebugStatus(`ERRO IA: ACESSO AO VÍDEO NEGADO`);
         }
         
-        iaTimeout = setTimeout(runIA, 200); // Descanso tático para o processador
+        iaTimeout = setTimeout(runIA, 500); // Aumentado para 500ms para reduzir carga na CPU e acabar com o lag
       };
 
       runIA();
@@ -686,396 +728,421 @@ export default function GogomaSentinelFirebase() {
     }
   };
 
-  if (!isModelsLoaded && status !== 'Sentinel Ativo') {
+  if (!isModelsLoaded && !status.includes('Erro')) {
     return (
-      <div className="min-h-screen bg-[#1a1a1e] flex flex-col items-center justify-center text-white p-10 font-sans">
-        <Shield className="text-blue-500 animate-pulse mb-6" size={80} />
-        <h1 className="text-4xl font-black tracking-tighter mb-2">GOGOMA <span className="text-blue-500">SENTINEL</span></h1>
-        <p className="text-zinc-500 uppercase tracking-widest text-sm mb-8">Inicializando Protocolos Biométricos...</p>
-        <div className="bg-blue-600/20 border border-blue-500/40 px-6 py-3 rounded-2xl flex items-center gap-3">
-          <Loader2 className="animate-spin text-blue-400" size={20} />
-          <span className="text-blue-400 font-bold font-mono">{status.toUpperCase()}</span>
+      <div className="min-h-screen bg-[#080a0e] flex flex-col items-center justify-center text-white p-10 font-sans relative overflow-hidden">
+        <div className="absolute inset-0 bg-blue-600/5 animate-pulse"></div>
+        <Shield className="text-blue-500 animate-bounce mb-6 relative z-10" size={80} />
+        <h1 className="text-4xl font-black tracking-tighter mb-2 relative z-10">GOGOMA <span className="text-blue-500">SENTINEL</span></h1>
+        <p className="text-zinc-500 uppercase tracking-widest text-xs mb-8 relative z-10 font-mono">Inicializando Protocolos de Defesa v3</p>
+        <div className="bg-blue-600/10 border border-blue-500/30 px-8 py-4 rounded-3xl flex flex-col items-center gap-4 relative z-10 backdrop-blur-xl min-w-[300px]">
+          <div className="flex items-center gap-4">
+            <Loader2 className="animate-spin text-blue-400" size={24} />
+            <div className="flex flex-col">
+              <span className="text-blue-400 font-black font-mono text-sm tracking-tighter">{String(status || 'Standby').toUpperCase()}</span>
+              <span className="text-[10px] text-zinc-500 font-mono">Aguardando resposta dos sensores...</span>
+            </div>
+          </div>
+          <div className="w-full bg-white/5 h-1 rounded-full overflow-hidden">
+            <div 
+              className="h-full bg-blue-500 transition-all duration-500" 
+              style={{ width: status.includes('25%') ? '25%' : (status.includes('50%') ? '50%' : (status.includes('75%') ? '75%' : (isModelsLoaded ? '100%' : '10%'))) }}
+            ></div>
+          </div>
+        </div>
+
+        <div className="mt-8 flex flex-col items-center gap-2 z-10">
+          <button 
+            onClick={() => {
+              localStorage.clear();
+              window.location.reload();
+            }}
+            className="text-[9px] text-zinc-600 hover:text-red-500 transition-colors uppercase font-mono tracking-tighter border-b border-zinc-800"
+          >
+            [ LIMPAR CACHE E FORÇAR HARD RESET ]
+          </button>
         </div>
       </div>
     );
   }
 
-  return (
-    <div className="min-h-screen bg-[#0a0a0c] text-zinc-100 font-sans p-6 overflow-hidden flex flex-col">
-      {/* BARRA DE DIAGNÓSTICO GOGOMA */}
-      <div className="fixed top-0 left-0 right-0 z-[9999] bg-blue-600 text-white text-[10px] font-black px-4 py-1 flex justify-between items-center shadow-2xl">
-        <span>GOGOMA SENTINEL V3 // DIAGNÓSTICO ATIVO</span>
-        <span>STATUS: {status.toUpperCase()} | IA: {isModelsLoaded ? 'ONLINE' : 'CARREGANDO...'} | MEMBROS: {faceMatcher ? faceMatcher.labeledDescriptors.length : 0} | VIEW: {view.toUpperCase()}</span>
+  if (status.includes('Erro')) {
+    return (
+      <div className="min-h-screen bg-red-950/20 flex flex-col items-center justify-center text-white p-10 font-sans backdrop-blur-3xl">
+        <AlertCircle className="text-red-500 mb-6" size={80} />
+        <h1 className="text-3xl font-black mb-2 uppercase tracking-tighter">Falha de Inicialização</h1>
+        <p className="text-red-400 font-mono text-sm mb-8 bg-red-500/10 px-4 py-2 rounded-lg border border-red-500/20">{status}</p>
+        <button 
+          onClick={() => window.location.reload()}
+          className="bg-white text-black px-8 py-3 rounded-2xl font-black hover:bg-zinc-200 transition-all flex items-center gap-2 mb-4"
+        >
+          <RefreshCw size={20}/> REINICIAR SISTEMA
+        </button>
+        <button 
+          onClick={() => setIsModelsLoaded(true)}
+          className="text-zinc-500 text-[10px] font-mono hover:text-white transition-colors"
+        >
+          [ IGNORAR ERRO E FORÇAR ENTRADA NO MONITOR ]
+        </button>
       </div>
+    );
+  }
 
-      {/* Header Profissional */}
-      <header className="flex justify-between items-center mb-8 border-b border-white/5 pb-4">
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 bg-blue-600/20 rounded-xl flex items-center justify-center border border-blue-500/40">
-            <Shield className="text-blue-500" size={28} />
-          </div>
-          <div>
-            <h1 className="text-2xl font-black tracking-tighter flex items-center gap-2">
-              GOGOMA <span className="text-blue-500 italic">SENTINEL v3</span>
-              <span className="text-[10px] bg-red-600 text-white px-2 py-0.5 rounded-full uppercase font-bold tracking-widest">Sala de Segurança</span>
-            </h1>
-            <p className="text-xs text-zinc-500 font-mono mt-1">SISTEMA MULTI-CÂMERAS IP | MOSAICO</p>
-          </div>
+  console.log("🖥️ [GOGOMA] Renderizando UI Principal | View:", view, "Models Loaded:", isModelsLoaded);
+  return (
+    <ErrorBoundary>
+      <div className="min-h-screen bg-[#0a0a0c] text-zinc-100 font-sans p-6 overflow-hidden flex flex-col">
+        {/* BARRA DE DIAGNÓSTICO GOGOMA */}
+        <div className="fixed top-0 left-0 right-0 z-[9999] bg-blue-600 text-white text-[10px] font-black px-4 py-1 flex justify-between items-center shadow-2xl">
+          <span>GOGOMA SENTINEL V3 // DIAGNÓSTICO ATIVO</span>
+          <span>STATUS: {status.toUpperCase()} | IA: {isModelsLoaded ? 'ONLINE' : 'CARREGANDO...'} | MEMBROS: {faceMatcher ? faceMatcher.labeledDescriptors.length : 0} | VIEW: {view.toUpperCase()}</span>
         </div>
-        
-        <nav className="flex items-center gap-3">
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 bg-white/5 p-1 rounded-xl border border-white/10">
-              <input 
-                type="text" 
-                placeholder="IP Rápido (ex: 192.168.1.5)" 
-                value={cameraIp}
-                onChange={(e) => setCameraIp(e.target.value)}
-                className="bg-transparent border-none text-[10px] font-mono px-3 py-1 focus:ring-0 w-32"
-              />
+
+        {/* Header Profissional */}
+        <header className="flex justify-between items-center mb-8 border-b border-white/5 pb-4">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-blue-600/20 rounded-xl flex items-center justify-center border border-blue-500/40">
+              <Shield className="text-blue-500" size={28} />
+            </div>
+            <div>
+              <h1 className="text-2xl font-black tracking-tighter flex items-center gap-2">
+                GOGOMA <span className="text-blue-500 italic">SENTINEL v3</span>
+                <span className="text-[10px] bg-red-600 text-white px-2 py-0.5 rounded-full uppercase font-bold tracking-widest">Sala de Segurança</span>
+              </h1>
+              <p className="text-xs text-zinc-500 font-mono mt-1">SISTEMA MULTI-CÂMERAS IP | MOSAICO</p>
+            </div>
+          </div>
+          
+          <nav className="flex items-center gap-3">
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 bg-white/5 p-1 rounded-xl border border-white/10">
+                <input 
+                  type="text" 
+                  placeholder="IP Rápido (ex: 192.168.1.5)" 
+                  value={cameraIp}
+                  onChange={(e) => setCameraIp(e.target.value)}
+                  className="bg-transparent border-none text-[10px] font-mono px-3 py-1 focus:ring-0 w-32"
+                />
+                <button 
+                  onClick={() => saveCameraIp(cameraIp)}
+                  className="bg-blue-600 hover:bg-blue-500 text-white p-2 rounded-lg transition-all"
+                  title="Sincronizar IA com este IP"
+                >
+                  <RefreshCw size={12} />
+                </button>
+              </div>
+
               <button 
-                onClick={() => saveCameraIp(cameraIp)}
-                className="bg-blue-600 hover:bg-blue-500 text-white p-2 rounded-lg transition-all"
-                title="Sincronizar IA com este IP"
+                onClick={() => setCameras([...cameras, { id: Date.now(), url: 'http://192.168.1.X:8080/video', zoom: 1 }])}
+                className="px-4 py-2 rounded-xl text-xs font-black transition-all flex items-center gap-2 shadow-lg border bg-zinc-800 text-white border-zinc-700 hover:bg-zinc-700"
               >
-                <RefreshCw size={12} />
+                <Camera size={14} /> ADICIONAR CÂMERA IP
               </button>
             </div>
-
+            {/* BOTÃO DO CADEADO (Sincronizado com Servidor) */}
             <button 
-              onClick={() => setCameras([...cameras, { id: Date.now(), url: 'http://192.168.1.X:8080/video', zoom: 1 }])}
-              className="px-4 py-2 rounded-xl text-xs font-black transition-all flex items-center gap-2 shadow-lg border bg-zinc-800 text-white border-zinc-700 hover:bg-zinc-700"
-            >
-              <Camera size={14} /> ADICIONAR CÂMERA IP
-            </button>
-          </div>
-          {/* BOTÃO DO CADEADO (Sincronizado com Servidor) */}
-          <button 
-            onClick={() => { 
-              const newArmed = !isArmed;
-              setIsArmed(newArmed); 
-              setStatus(newArmed ? 'Sentinel Vigilante' : 'Sentinel em Espera');
-              // Sincroniza com o servidor
-              fetch('/api/config', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ isArmed: newArmed })
-              }).catch(e => console.error("Erro ao sincronizar estado armado:", e));
-            }}
-            className={`px-4 py-2 rounded-xl text-sm font-black transition-all flex items-center gap-2 shadow-xl border ${isArmed ? 'bg-blue-600 text-white border-blue-400 animate-pulse' : 'bg-zinc-800 text-zinc-500 border-zinc-700'}`}>
-            {isArmed ? <Lock size={16} /> : <Unlock size={16} />}
-            {isArmed ? 'VIGILÂNCIA ATIVA' : 'SISTEMA DESARMADO'}
-          </button>
+              onClick={() => { 
+                const newArmed = !isArmed;
+                setIsArmed(newArmed); 
+                if (!newArmed) setIsPanic(false); // Mata o pânico localmente
+                setStatus(newArmed ? 'Sentinel Vigilante' : 'Sentinel em Espera');
+                
+                // Sincroniza estado e reseta pânico se desarmar
+                const payload = { isArmed: newArmed };
+                if (!newArmed) payload.isPanic = false;
 
-          <div className="flex bg-white/5 p-1 rounded-xl border border-white/5">
-            <button onClick={() => setView('monitor')} className={`px-4 py-2 rounded-lg text-sm font-bold transition-all flex items-center gap-2 ${view === 'monitor' ? 'bg-blue-600 text-white shadow-lg' : 'text-zinc-400 hover:text-zinc-200'}`}><Layout size={16}/> Monitor</button>
-            <button onClick={() => setView('register')} className={`px-4 py-2 rounded-lg text-sm font-bold transition-all flex items-center gap-2 ${view === 'register' ? 'bg-blue-600 text-white shadow-lg' : 'text-zinc-400 hover:text-zinc-200'}`}><UserPlus size={16}/> Cadastro</button>
-            <button onClick={() => setView('search')} className={`px-4 py-2 rounded-lg text-sm font-bold transition-all flex items-center gap-2 ${view === 'search' ? 'bg-blue-600 text-white shadow-lg' : 'text-zinc-400 hover:text-zinc-200'}`}><Search size={16}/> Busca Histórica</button>
-            <button onClick={() => setView('admin')} className={`px-4 py-2 rounded-lg text-sm font-bold transition-all flex items-center gap-2 ${view === 'admin' ? 'bg-blue-600 text-white shadow-lg' : 'text-zinc-400 hover:text-zinc-200'}`}><Settings size={16}/> Gestão de Membros</button>
-            <button 
-              onClick={() => {
-                const newPanic = !isPanic;
-                if (!newPanic && audioCtxRef.current) audioCtxRef.current.resume();
-                setIsPanic(newPanic);
-                // Sincroniza com o servidor
                 fetch('/api/config', {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ isPanic: newPanic })
-                }).catch(e => console.error("Erro ao sincronizar pânico:", e));
-              }} 
-              className={`px-6 py-2 rounded-xl text-xs font-black transition-all flex items-center gap-2 border-2 shadow-[0_0_20px_rgba(220,38,38,0.4)] ${isPanic ? 'bg-red-600 text-white animate-pulse border-white' : 'bg-red-600/10 text-red-500 border-red-500/30 hover:bg-red-600 hover:text-white'}`}
-            >
-              <Zap size={16}/> {isPanic ? 'PARAR PÂNICO' : 'BOTÃO DE PÂNICO'}
+                  body: JSON.stringify(payload)
+                }).catch(e => console.error("Erro ao sincronizar estado armado:", e));
+              }}
+              className={`px-4 py-2 rounded-xl text-sm font-black transition-all flex items-center gap-2 shadow-xl border ${isArmed ? 'bg-blue-600 text-white border-blue-400 animate-pulse' : 'bg-zinc-800 text-zinc-500 border-zinc-700'}`}>
+              {isArmed ? <Lock size={16} /> : <Unlock size={16} />}
+              {isArmed ? 'VIGILÂNCIA ATIVA' : 'SISTEMA DESARMADO'}
             </button>
-          </div>
-        </nav>
-      </header>
 
-      {/* Main View */}
-      <main className="flex-1">
-        {view === 'monitor' && (
-          <div className="grid grid-cols-12 gap-8 h-full">
-            <div className="col-span-9 relative group">
-              <div ref={containerRef} className="relative rounded-3xl overflow-hidden shadow-2xl bg-[#111] h-[650px] p-4 border border-white/5">
-                
-                {/* Mosaico Grid (Aberto por Padrão) */}
-                <div style={{ transform: `scale(${zoom})`, transformOrigin: 'top center', transition: 'transform 0.3s' }} 
-                     className={`w-full h-full grid gap-6 ${cameras.length === 1 ? 'grid-cols-1' : 'grid-cols-2'}`}>
+            <div className="flex bg-white/5 p-1 rounded-xl border border-white/5">
+              <button onClick={() => setView('monitor')} className={`px-4 py-2 rounded-lg text-sm font-bold transition-all flex items-center gap-2 ${view === 'monitor' ? 'bg-blue-600 text-white shadow-lg' : 'text-zinc-400 hover:text-zinc-200'}`}><Layout size={16}/> Monitor</button>
+              <button onClick={() => setView('register')} className={`px-4 py-2 rounded-lg text-sm font-bold transition-all flex items-center gap-2 ${view === 'register' ? 'bg-blue-600 text-white shadow-lg' : 'text-zinc-400 hover:text-zinc-200'}`}><UserPlus size={16}/> Cadastro</button>
+              <button onClick={() => setView('search')} className={`px-4 py-2 rounded-lg text-sm font-bold transition-all flex items-center gap-2 ${view === 'search' ? 'bg-blue-600 text-white shadow-lg' : 'text-zinc-400 hover:text-zinc-200'}`}><Search size={16}/> Busca Histórica</button>
+              <button onClick={() => setView('admin')} className={`px-4 py-2 rounded-lg text-sm font-bold transition-all flex items-center gap-2 ${view === 'admin' ? 'bg-blue-600 text-white shadow-lg' : 'text-zinc-400 hover:text-zinc-200'}`}><Settings size={16}/> Gestão de Membros</button>
+              <button 
+                onClick={() => {
+                  const newPanic = !isPanic;
+                  if (!newPanic && audioCtxRef.current) audioCtxRef.current.resume();
+                  setIsPanic(newPanic);
+                  // Sincroniza com o servidor
+                  fetch('/api/config', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ isPanic: newPanic, manual: true })
+                  }).catch(e => console.error("Erro ao sincronizar pânico:", e));
+                }} 
+                className={`px-6 py-2 rounded-xl text-xs font-black transition-all flex items-center gap-2 border-2 shadow-[0_0_20px_rgba(220,38,38,0.4)] ${isPanic ? 'bg-red-600 text-white animate-pulse border-white' : 'bg-red-600/10 text-red-500 border-red-500/30 hover:bg-red-600 hover:text-white'}`}
+              >
+                <Zap size={16}/> {isPanic ? 'PARAR PÂNICO' : 'BOTÃO DE PÂNICO'}
+              </button>
+            </div>
+          </nav>
+        </header>
+
+        {/* Main View */}
+        <main className="flex-1">
+          {view === 'monitor' && (
+            <div className="grid grid-cols-12 gap-8 h-full">
+              <div className="col-span-9 relative group">
+                <div ref={containerRef} className="relative rounded-3xl overflow-hidden shadow-2xl bg-[#111] h-[650px] p-4 border border-white/5">
                   
-                  {cameras.map((cam, i) => (
-                    <div key={cam.id} className="relative rounded-2xl overflow-hidden border-2 border-blue-500/30 bg-[#050505] min-h-[300px]">
-                      
-                      {/* IP Input (SEMPRE NO TOPO) */}
-                      <div className="absolute top-2 left-2 z-[100] flex flex-col gap-2">
-                        <div className="bg-black/90 p-3 rounded-2xl border-2 border-blue-500/40 flex items-center gap-3 shadow-[0_0_30px_rgba(0,0,0,0.8)]">
-                          <span className="text-xs font-black text-blue-400">IP:</span>
-                          <input 
-                            type="text" 
-                            value={cam.url}
-                            onChange={(e) => {
-                              const newCams = [...cameras];
-                              newCams[i].url = e.target.value;
-                              saveCameras(newCams);
+                  {/* Mosaico Grid (Aberto por Padrão) */}
+                  <div style={{ transform: `scale(${zoom})`, transformOrigin: 'top center', transition: 'transform 0.3s' }} 
+                       className={`w-full h-full grid gap-6 ${cameras.length === 1 ? 'grid-cols-1' : 'grid-cols-2'}`}>
+                    
+                    {cameras.map((cam, i) => (
+                      <div key={cam.id} className="relative rounded-2xl overflow-hidden border-2 border-blue-500/30 bg-[#050505] min-h-[300px]">
+                        
+                        {/* IP Input (SEMPRE NO TOPO) */}
+                        <div className="absolute top-2 left-2 z-[100] flex flex-col gap-2">
+                          <div className="bg-black/90 p-3 rounded-2xl border-2 border-blue-500/40 flex items-center gap-3 shadow-[0_0_30px_rgba(0,0,0,0.8)]">
+                            <span className="text-xs font-black text-blue-400">IP:</span>
+                            <input 
+                              type="text" 
+                              value={cam.url}
+                              onChange={(e) => {
+                                const newCams = [...cameras];
+                                newCams[i].url = e.target.value;
+                                saveCameras(newCams);
+                              }}
+                              className="bg-transparent border-b border-blue-500/20 text-sm text-white font-mono outline-none w-56 focus:border-blue-500"
+                            />
+                          </div>
+                          
+                          <div className="flex gap-3">
+                            <button 
+                              onClick={() => {
+                                const newNightModes = new Set(nightModeCams);
+                                if (newNightModes.has(cam.id)) newNightModes.delete(cam.id);
+                                else newNightModes.add(cam.id);
+                                setNightModeCams(newNightModes);
+                              }}
+                              className={`px-4 py-2 rounded-xl text-xs font-black flex items-center gap-2 shadow-2xl transition-all border-2 ${nightModeCams.has(cam.id) ? 'bg-green-600 text-white border-green-400 animate-pulse' : 'bg-zinc-800 text-zinc-400 border-zinc-700'}`}
+                            >
+                              <Shield size={16}/> {nightModeCams.has(cam.id) ? 'NOITE: ON' : 'MODO NOITE'}
+                            </button>
+
+                            <button 
+                              onClick={() => toggleFlash(cam.url, true)}
+                              className="bg-amber-500 hover:bg-amber-400 text-black px-4 py-2 rounded-xl text-xs font-black flex items-center gap-2 shadow-2xl border-2 border-amber-600"
+                            >
+                              <Zap size={16}/> LUZ ON
+                            </button>
+                            
+                            <button 
+                              onClick={() => toggleFlash(cam.url, false)}
+                              className="bg-zinc-800 hover:bg-zinc-700 text-white px-4 py-2 rounded-xl text-xs font-black border-2 border-zinc-700"
+                            >
+                              OFF
+                            </button>
+
+                            {/* ZOOM INDIVIDUAL (MAIOR E MAIS VISÍVEL) */}
+                            <div className="flex items-center gap-2 bg-black/60 backdrop-blur-md rounded-xl px-4 border-2 border-blue-500/40 shadow-2xl">
+                              <button onClick={() => updateCamZoom(cam.id, -0.2)} className="text-white hover:text-blue-400 p-2 transform active:scale-90 transition-transform"><ZoomOut size={18}/></button>
+                              <span className="text-xs font-black font-mono text-blue-400 w-12 text-center">{Math.round((cam.zoom || 1) * 100)}%</span>
+                              <button onClick={() => updateCamZoom(cam.id, 0.2)} className="text-white hover:text-blue-400 p-2 transform active:scale-90 transition-transform"><ZoomIn size={18}/></button>
+                            </div>
+
+                            <button 
+                              onClick={() => {
+                                const audioId = `audio-${cam.id}`;
+                                const audioEl = document.getElementById(audioId);
+                                if (audioActive !== cam.id) {
+                                  audioEl.src = cam.url.replace('/video', '/audio.wav') + '?t=' + Date.now();
+                                  audioEl.play().catch(e => console.warn("Clique para áudio"));
+                                  setAudioActive(cam.id);
+                                } else {
+                                  audioEl.pause(); audioEl.src = '';
+                                  setAudioActive(null);
+                                }
+                              }}
+                              className={`px-3 py-1 rounded-lg text-[10px] font-black transition-all ${audioActive === cam.id ? 'bg-amber-500 text-black animate-pulse' : 'bg-blue-600 text-white'}`}
+                            >
+                              <Users size={12}/> {audioActive === cam.id ? 'OUVINDO...' : 'ESCUTA'}
+                            </button>
+                          </div>
+                        </div>
+
+                        <div className="absolute top-2 right-2 z-[100] flex gap-2">
+                          <button 
+                            onClick={() => {
+                              const container = cameraRefs.current[i].parentElement;
+                              if (!document.fullscreenElement) container.requestFullscreen();
+                              else document.exitFullscreen();
                             }}
-                            className="bg-transparent border-b border-blue-500/20 text-sm text-white font-mono outline-none w-56 focus:border-blue-500"
+                            className="bg-blue-600 hover:bg-blue-500 text-white p-2 rounded-xl shadow-lg transition-all"
+                            title="Foco Individual"
+                          >
+                            <Maximize size={14}/>
+                          </button>
+                          <button 
+                            onClick={() => saveCameras(cameras.filter(c => c.id !== cam.id))}
+                            className="bg-red-600 hover:bg-red-500 text-white p-2 rounded-xl shadow-lg transition-all"
+                            title="Remover Câmera"
+                          >
+                            <Trash2 size={14}/>
+                          </button>
+                        </div>
+
+                        {/* VÍDEO NATIVO E IA (COM ZOOM INDEPENDENTE) */}
+                        <div className="absolute inset-0 overflow-hidden bg-zinc-900">
+                          <img 
+                            ref={el => cameraRefs.current[i] = el} 
+                            src={cam.url} 
+                            crossOrigin="anonymous" 
+                            className="w-full h-full object-contain transition-all duration-500" 
+                            style={{ 
+                              display: 'block', 
+                              zIndex: 10,
+                              transform: `scale(${cam.zoom || 1})`,
+                              filter: nightModeCams.has(cam.id) ? 'brightness(2) contrast(1.2) grayscale(1) sepia(1) hue-rotate(85deg) saturate(2)' : 'none'
+                            }}
+                            onError={(e) => {
+                              const errDiv = document.createElement('div');
+                              errDiv.className = "absolute inset-0 flex flex-col items-center justify-center p-4 text-center z-[11] bg-red-950/80";
+                              errDiv.innerHTML = `<p class='text-red-500 font-bold'>ERRO DE CONEXÃO</p><p class='text-[10px] text-zinc-400'>URL: ${cam.url}</p>`;
+                              if(e.target.parentElement) e.target.parentElement.appendChild(errDiv);
+                            }}
+                          />
+
+                          <audio id={`audio-${cam.id}`} src="" preload="none" crossOrigin="anonymous" />
+
+                          <canvas 
+                            ref={el => canvasRefs.current[i] = el} 
+                            className="absolute inset-0 pointer-events-none w-full h-full object-contain z-[20]" 
+                            style={{ transform: `scale(${cam.zoom || 1})` }}
                           />
                         </div>
-                        
-                        <div className="flex gap-3">
-                          <button 
-                            onClick={() => {
-                              const newNightModes = new Set(nightModeCams);
-                              if (newNightModes.has(cam.id)) newNightModes.delete(cam.id);
-                              else newNightModes.add(cam.id);
-                              setNightModeCams(newNightModes);
-                            }}
-                            className={`px-4 py-2 rounded-xl text-xs font-black flex items-center gap-2 shadow-2xl transition-all border-2 ${nightModeCams.has(cam.id) ? 'bg-green-600 text-white border-green-400 animate-pulse' : 'bg-zinc-800 text-zinc-400 border-zinc-700'}`}
-                          >
-                            <Shield size={16}/> {nightModeCams.has(cam.id) ? 'NOITE: ON' : 'MODO NOITE'}
-                          </button>
 
-                          <button 
-                            onClick={() => toggleFlash(cam.url, true)}
-                            className="bg-amber-500 hover:bg-amber-400 text-black px-4 py-2 rounded-xl text-xs font-black flex items-center gap-2 shadow-2xl border-2 border-amber-600"
-                          >
-                            <Zap size={16}/> LUZ ON
-                          </button>
-                          
-                          <button 
-                            onClick={() => toggleFlash(cam.url, false)}
-                            className="bg-zinc-800 hover:bg-zinc-700 text-white px-4 py-2 rounded-xl text-xs font-black border-2 border-zinc-700"
-                          >
-                            OFF
-                          </button>
-
-                          {/* ZOOM INDIVIDUAL (MAIOR E MAIS VISÍVEL) */}
-                          <div className="flex items-center gap-2 bg-black/60 backdrop-blur-md rounded-xl px-4 border-2 border-blue-500/40 shadow-2xl">
-                            <button onClick={() => updateCamZoom(cam.id, -0.2)} className="text-white hover:text-blue-400 p-2 transform active:scale-90 transition-transform"><ZoomOut size={18}/></button>
-                            <span className="text-xs font-black font-mono text-blue-400 w-12 text-center">{Math.round((cam.zoom || 1) * 100)}%</span>
-                            <button onClick={() => updateCamZoom(cam.id, 0.2)} className="text-white hover:text-blue-400 p-2 transform active:scale-90 transition-transform"><ZoomIn size={18}/></button>
-                          </div>
-
-                          <button 
-                            onClick={() => {
-                              const audioId = `audio-${cam.id}`;
-                              const audioEl = document.getElementById(audioId);
-                              if (audioActive !== cam.id) {
-                                audioEl.src = cam.url.replace('/video', '/audio.wav') + '?t=' + Date.now();
-                                audioEl.play().catch(e => console.warn("Clique para áudio"));
-                                setAudioActive(cam.id);
-                              } else {
-                                audioEl.pause(); audioEl.src = '';
-                                setAudioActive(null);
-                              }
-                            }}
-                            className={`px-3 py-1 rounded-lg text-[10px] font-black transition-all ${audioActive === cam.id ? 'bg-amber-500 text-black animate-pulse' : 'bg-blue-600 text-white'}`}
-                          >
-                            <Users size={12}/> {audioActive === cam.id ? 'OUVINDO...' : 'ESCUTA'}
-                          </button>
+                        <div className="absolute bottom-2 right-2 z-[30] bg-green-600/20 border border-green-500/40 px-2 py-1 rounded text-[8px] font-black text-green-500 animate-pulse">
+                          LIVE SIGNAL
                         </div>
                       </div>
-
-                      <div className="absolute top-2 right-2 z-[100] flex gap-2">
-                        <button 
-                          onClick={() => {
-                            const container = cameraRefs.current[i].parentElement;
-                            if (!document.fullscreenElement) container.requestFullscreen();
-                            else document.exitFullscreen();
-                          }}
-                          className="bg-blue-600 hover:bg-blue-500 text-white p-2 rounded-xl shadow-lg transition-all"
-                          title="Foco Individual"
-                        >
-                          <Maximize size={14}/>
-                        </button>
-                        <button 
-                          onClick={() => saveCameras(cameras.filter(c => c.id !== cam.id))}
-                          className="bg-red-600 hover:bg-red-500 text-white p-2 rounded-xl shadow-lg transition-all"
-                          title="Remover Câmera"
-                        >
-                          <Trash2 size={14}/>
-                        </button>
-                      </div>
-
-                      {/* VÍDEO NATIVO E IA (COM ZOOM INDEPENDENTE) */}
-                      <div className="absolute inset-0 overflow-hidden bg-zinc-900">
-                        <img 
-                          ref={el => cameraRefs.current[i] = el} 
-                          src={cam.url} 
-                          crossOrigin="anonymous" 
-                          className="w-full h-full object-contain transition-all duration-500" 
-                          style={{ 
-                            display: 'block', 
-                            zIndex: 10,
-                            transform: `scale(${cam.zoom || 1})`,
-                            filter: nightModeCams.has(cam.id) ? 'brightness(2) contrast(1.2) grayscale(1) sepia(1) hue-rotate(85deg) saturate(2)' : 'none'
-                          }}
-                          onError={(e) => {
-                            const errDiv = document.createElement('div');
-                            errDiv.className = "absolute inset-0 flex flex-col items-center justify-center p-4 text-center z-[11] bg-red-950/80";
-                            errDiv.innerHTML = `<p class='text-red-500 font-bold'>ERRO DE CONEXÃO</p><p class='text-[10px] text-zinc-400'>URL: ${cam.url}</p>`;
-                            e.target.parentElement.appendChild(errDiv);
-                          }}
-                        />
-
-                        {/* CANAL DE ÁUDIO ESTABILIZADO */}
-                        <audio 
-                          id={`audio-${cam.id}`} 
-                          src=""
-                          preload="none"
-                          crossOrigin="anonymous"
-                        />
-
-                        {/* HUD DA IA (SOBREPOSIÇÃO TRANSPARENTE COM ZOOM SINCRONIZADO) */}
-                        <canvas 
-                          ref={el => canvasRefs.current[i] = el} 
-                          className="absolute inset-0 pointer-events-none w-full h-full object-contain z-[20]" 
-                          style={{ transform: `scale(${cam.zoom || 1})` }}
-                        />
-                      </div>
-
-                      {/* INDICADOR DE SINAL ATIVO */}
-                      <div className="absolute bottom-2 right-2 z-[30] bg-green-600/20 border border-green-500/40 px-2 py-1 rounded text-[8px] font-black text-green-500 animate-pulse">
-                        LIVE SIGNAL
-                      </div>
-                    </div>
-                  ))}
-
-                </div>
-
-                {/* Controles da Câmera Geral (Reposicionados para o Canto Inferior Direito) */}
-                <div className="absolute bottom-6 right-6 flex flex-col gap-3 z-50">
-                  <button 
-                    onClick={toggleFullScreen} 
-                    className="bg-black/60 backdrop-blur-md p-3 rounded-xl hover:bg-blue-600 text-white border border-white/20 transition-all shadow-xl"
-                    title={isFullscreen ? "Sair da Tela Cheia" : "Tela Cheia"}
-                  >
-                    {isFullscreen ? <Minimize size={20} /> : <Maximize size={20} />}
-                  </button>
-                  
-                  <div className="bg-black/60 backdrop-blur-md p-2 rounded-xl border border-white/20 flex flex-col items-center gap-3 shadow-xl">
-                    <button onClick={() => setZoom(z => Math.min(z + 0.2, 4))} className="p-2 hover:bg-white/10 rounded-lg text-zinc-300 hover:text-white transition-all"><ZoomIn size={20} /></button>
-                    <span className="text-[10px] font-mono font-bold text-blue-400 bg-blue-500/10 px-2 py-1 rounded-md">{Math.round(zoom * 100)}%</span>
-                    <button onClick={() => setZoom(z => Math.max(z - 0.2, 1))} className="p-2 hover:bg-white/10 rounded-lg text-zinc-300 hover:text-white transition-all"><ZoomOut size={20} /></button>
+                    ))}
                   </div>
-                </div>
 
-                <div className="absolute bottom-8 left-8 flex gap-4 z-40">
-                  <div className="glass-card px-6 py-3 rounded-2xl flex items-center gap-4">
-                    <div className={`w-3 h-3 rounded-full ${identifiedName.includes('Desconhecido') ? 'bg-red-500 animate-pulse' : (identifiedName.includes('Suspeito') ? 'bg-amber-500 animate-bounce' : (identifiedName ? 'bg-blue-500 pulse-blue' : 'bg-gray-500'))}`}></div>
-                    <div>
-                      <p className="text-[10px] uppercase font-black text-zinc-500 tracking-widest">Alvos Detectados</p>
-                      <p className={`text-xl font-mono font-bold ${identifiedName.includes('Desconhecido') ? 'text-red-500' : (identifiedName.includes('Suspeito') ? 'text-amber-500' : 'text-blue-500')}`}>{identifiedName ? identifiedName.toUpperCase() : 'NENHUM ALVO'}</p>
-                      <p className="text-[9px] font-mono text-zinc-600 mt-1">SISTEMA: {debugStatus.toUpperCase()}</p>
+                  <div className="absolute bottom-6 right-6 flex flex-col gap-3 z-50">
+                    <button onClick={toggleFullScreen} className="bg-black/60 backdrop-blur-md p-3 rounded-xl hover:bg-blue-600 text-white border border-white/20 transition-all shadow-xl">
+                      {isFullscreen ? <Minimize size={20} /> : <Maximize size={20} />}
+                    </button>
+                    <div className="bg-black/60 backdrop-blur-md p-2 rounded-xl border border-white/20 flex flex-col items-center gap-3 shadow-xl">
+                      <button onClick={() => setZoom(z => Math.min(z + 0.2, 4))} className="p-2 hover:bg-white/10 rounded-lg text-zinc-300 hover:text-white transition-all"><ZoomIn size={20} /></button>
+                      <span className="text-[10px] font-mono font-bold text-blue-400 bg-blue-500/10 px-2 py-1 rounded-md">{Math.round(zoom * 100)}%</span>
+                      <button onClick={() => setZoom(z => Math.max(z - 0.2, 1))} className="p-2 hover:bg-white/10 rounded-lg text-zinc-300 hover:text-white transition-all"><ZoomOut size={20} /></button>
+                    </div>
+                  </div>
+
+                  <div className="absolute bottom-8 left-8 flex gap-4 z-40">
+                    <div className="glass-card px-6 py-3 rounded-2xl flex items-center gap-4">
+                      <div className={`w-3 h-3 rounded-full ${identifiedName.includes('Desconhecido') ? 'bg-red-500 animate-pulse' : (identifiedName.includes('Suspeito') ? 'bg-amber-500 animate-bounce' : (identifiedName ? 'bg-blue-500 pulse-blue' : 'bg-gray-500'))}`}></div>
+                      <div>
+                        <p className="text-[10px] uppercase font-black text-zinc-500 tracking-widest">Alvos Detectados</p>
+                        <p className={`text-xl font-mono font-bold ${String(identifiedName).includes('Desconhecido') ? 'text-red-500' : (String(identifiedName).includes('Suspeito') ? 'text-amber-500' : 'text-blue-500')}`}>{identifiedName ? String(identifiedName).toUpperCase() : 'NENHUM ALVO'}</p>
+                        <p className="text-[9px] font-mono text-zinc-600 mt-1">SISTEMA: {String(debugStatus || 'OK').toUpperCase()}</p>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div className="col-span-3 flex flex-col gap-4">
-               <div className="bg-white/5 border border-white/5 rounded-3xl p-6 flex-1 flex flex-col overflow-hidden">
-                  <div className="flex justify-between items-center mb-4">
-                    <h3 className="text-sm font-black uppercase text-zinc-500 flex items-center gap-2"><History size={16}/> EVIDÊNCIAS FORENSES</h3>
-                    <button 
-                      onClick={async () => {
-                        const step1 = window.confirm("🚨 LIMPEZA TOTAL SOLICITADA!\nDeseja apagar TODAS as evidências do banco de dados?");
-                        if (step1) {
-                          const step2 = window.confirm("⚠️ ÚLTIMO AVISO: Esta ação é IRREVERSÍVEL. Todos os rostos e registros serão perdidos para sempre. Confirmar?");
-                          if (step2) {
-                            try {
-                              setStatus("Limpando Arquivo...");
-                              const q = query(collection(db, 'detect_history'));
-                              const snapshot = await getDocs(q);
-                              const batchPromises = snapshot.docs.map(d => deleteDoc(doc(db, 'detect_history', d.id)));
-                              await Promise.all(batchPromises);
-                              setStatus("Arquivo Limpo com Sucesso.");
-                            } catch(e) { setStatus("Erro na limpeza: " + e.message); }
-                          }
-                        }
-                      }}
-                      className="text-[10px] font-black bg-red-600/10 hover:bg-red-600 text-red-500 hover:text-white px-3 py-1 rounded-lg border border-red-500/20 transition-all flex items-center gap-1"
-                    >
-                      <Trash2 size={12}/> LIMPAR TUDO
-                    </button>
-                  </div>
-                  <div className="flex-1 overflow-y-auto space-y-4 pr-2">
-                    {logs.length === 0 ? (
-                      <div className="flex flex-col items-center justify-center h-40 text-center border-2 border-dashed border-white/5 rounded-3xl">
-                        <Shield className="text-zinc-800 mb-2" size={32} />
-                        <p className="text-zinc-500 font-bold text-xs uppercase tracking-tighter">Vigilância Ativa</p>
-                        <p className="text-zinc-600 text-[10px]">Ninguém detetado ainda.</p>
-                      </div>
-                    ) : (
-                      logs.map(log => (
-                        <div key={log.id} className="flex gap-3 bg-black/50 p-3 rounded-2xl border border-white/5 items-center">
-                          <div 
-                            className="w-12 h-12 rounded-xl overflow-hidden border border-white/10 cursor-zoom-in hover:border-blue-500 transition-all"
-                            onClick={() => setSelectedImage(log.imageUrl)}
-                          >
-                            <img src={log.imageUrl} alt="Log" className="w-full h-full object-cover" />
-                          </div>
-                          <div className="flex-1">
-                            <p className={`text-xs font-bold ${log.status === 'Oculto/Suspeito' ? 'text-amber-500' : 'text-red-500'}`}>
-                              {log.status.toUpperCase()}
-                            </p>
-                            <p className="text-[10px] text-zinc-500">
-                              {log.timestamp ? new Date(log.timestamp.toDate()).toLocaleString() : 'A sincronizar...'}
-                            </p>
-                          </div>
-                          <button 
-                            onClick={async () => {
-                              if (window.confirm("🚨 ELIMINAR EVIDÊNCIA?\nEsta ação apagará este registo permanentemente do banco de dados.")) {
-                                try {
-                                  await deleteDoc(doc(db, 'detect_history', log.id));
-                                  setStatus("Registo Eliminado.");
-                                } catch(e) { setStatus("Erro ao apagar: " + e.message); }
+              <div className="col-span-3 flex flex-col gap-4">
+                 <div className="bg-white/5 border border-white/5 rounded-3xl p-6 flex-1 flex flex-col overflow-hidden">
+                    <div className="flex justify-between items-center mb-4">
+                      <h3 className="text-sm font-black uppercase text-zinc-500 flex items-center gap-2"><History size={16}/> EVIDÊNCIAS FORENSES</h3>
+                      <button 
+                        onClick={async () => {
+                          if (window.confirm("🚨 LIMPEZA TOTAL SOLICITADA?\nDeseja apagar TODAS as evidências?")) {
+                            if (window.confirm("⚠️ ÚLTIMO AVISO: Ação irreversível. Confirmar?")) {
+                              try {
+                                setStatus("Limpando...");
+                                
+                                // 1. Limpar Nuvem (Firebase)
+                                const q = query(collection(db, 'detect_history'));
+                                const snap = await getDocs(q);
+                                await Promise.all(snap.docs.map(d => deleteDoc(doc(db, 'detect_history', d.id))));
+                                
+                                // 2. Limpar Local (Server API)
+                                await fetch('/api/logs', { method: 'DELETE' });
+                                
+                                setLogs([]);
+                                setStatus("Arquivo Limpo.");
+                                alert("ARQUIVO DE EVIDÊNCIAS FOI COMPLETAMENTE ELIMINADO.");
+                              } catch(e) { 
+                                console.error("Erro ao limpar:", e);
+                                setStatus("Erro: " + e.message); 
                               }
-                            }}
-                            className="p-2 bg-red-600/20 hover:bg-red-600 text-red-500 hover:text-white rounded-lg transition-all border border-red-500/20"
-                            title="Apagar Registo"
-                          >
-                            <Trash2 size={14} />
-                          </button>
+                            }
+                          }
+                        }}
+                        className="text-[10px] font-black bg-red-600/10 hover:bg-red-600 text-red-500 hover:text-white px-3 py-1 rounded-lg border border-red-500/20 transition-all flex items-center gap-1"
+                      >
+                        <Trash2 size={12}/> LIMPAR
+                      </button>
+                    </div>
+                    <div className="flex-1 overflow-y-auto space-y-4 pr-2">
+                      {logs.length === 0 ? (
+                        <div className="flex flex-col items-center justify-center h-40 text-center border-2 border-dashed border-white/5 rounded-3xl">
+                          <Shield className="text-zinc-800 mb-2" size={32} />
+                          <p className="text-zinc-500 font-bold text-xs uppercase tracking-tighter">Vigilância Ativa</p>
+                          <p className="text-zinc-600 text-[10px]">Aguardando detecção...</p>
                         </div>
-                      ))
-                    )}
-                  </div>
-               </div>
+                      ) : (
+                        logs.map(log => (
+                          <div key={log.id} className="flex gap-3 bg-black/50 p-3 rounded-2xl border border-white/5 items-center">
+                            <div className="w-12 h-12 rounded-xl overflow-hidden border border-white/10 cursor-zoom-in hover:border-blue-500" onClick={() => setSelectedImage(log.imageUrl)}>
+                              <img src={log.imageUrl} className="w-full h-full object-cover" />
+                            </div>
+                            <div className="flex-1">
+                              <p className={`text-xs font-bold ${log.status === 'Oculto/Suspeito' ? 'text-amber-500' : 'text-red-500'}`}>
+                                {String(log.status || log.label || 'ALERTA').toUpperCase()}
+                              </p>
+                              <p className="text-[10px] text-zinc-500">
+                                {log.timestamp ? (
+                                  typeof log.timestamp.toDate === 'function' 
+                                    ? log.timestamp.toDate().toLocaleString() 
+                                    : (!isNaN(new Date(log.timestamp).getTime()) ? new Date(log.timestamp).toLocaleString() : 'Data Inválida')
+                                ) : '...'}
+                              </p>
+                            </div>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                 </div>
+              </div>
+            </div>
+          )}
+
+          {view === 'register' && <RegisterView cameras={cameras} isModelsLoaded={isModelsLoaded} onComplete={async () => { await syncWithFirebase(); setView('monitor'); }} />}
+          {view === 'search' && <SearchView />}
+          {view === 'admin' && <AdminView onSync={syncWithFirebase} setSelectedImage={setSelectedImage} />}
+        </main>
+
+        {/* ZOOM FORENSE */}
+        {selectedImage && (
+          <div className="fixed inset-0 z-[9999] bg-black/95 backdrop-blur-xl flex items-center justify-center p-4" onClick={() => setSelectedImage(null)}>
+            <div className="relative max-w-5xl w-full h-full flex flex-col items-center justify-center gap-6">
+              <button className="absolute -top-12 right-0 text-white font-black">FECHAR [X]</button>
+              <div className="w-full h-full rounded-[40px] overflow-hidden border-4 border-white/10 bg-zinc-900">
+                <img src={selectedImage} className="w-full h-full object-contain" />
+              </div>
             </div>
           </div>
         )}
-
-        {view === 'register' && <RegisterView cameras={cameras} onComplete={async () => { await syncWithFirebase(); setView('monitor'); }} />}
-        {view === 'search' && <SearchView />}
-        {view === 'admin' && <AdminView onSync={syncWithFirebase} setSelectedImage={setSelectedImage} />}
-      </main>
-
-      {/* ZOOM FORENSE (LIGHTBOX) */}
-      {selectedImage && (
-        <div 
-          className="fixed inset-0 z-[9999] bg-black/95 backdrop-blur-xl flex items-center justify-center p-4 md:p-20 animate-in fade-in zoom-in duration-300"
-          onClick={() => setSelectedImage(null)}
-        >
-          <div className="relative max-w-5xl w-full h-full flex flex-col items-center justify-center gap-6">
-            <button 
-              onClick={() => setSelectedImage(null)}
-              className="absolute -top-12 right-0 text-white hover:text-red-500 transition-colors flex items-center gap-2 font-black uppercase tracking-widest text-sm"
-            >
-              FECHAR [X]
-            </button>
-            <div className="w-full h-full rounded-[40px] overflow-hidden border-4 border-white/10 shadow-[0_0_100px_rgba(59,130,246,0.3)] bg-zinc-900">
-              <img src={selectedImage} className="w-full h-full object-contain" alt="Evidência Ampliada" />
-            </div>
-            <p className="text-zinc-500 font-mono text-xs uppercase tracking-[0.2em]">Visualizador de Evidências GOGOMA SENTINEL - Cópia Autêntica</p>
-          </div>
-        </div>
-      )}
-    </div>
+      </div>
+    </ErrorBoundary>
   );
 }
 
 // Sub-Componente de Cadastro
-function RegisterView({ cameras, onComplete }) {
+function RegisterView({ cameras, isModelsLoaded, onComplete }) {
   const [name, setName] = useState('');
   const [cargo, setCargo] = useState('');
   const [departamento, setDepartamento] = useState('');
@@ -1085,7 +1152,7 @@ function RegisterView({ cameras, onComplete }) {
   const [samples, setSamples] = useState([]); // descriptors capturados
 
   const captureSample = async () => {
-    if (!window.isModelsLoaded) return alert('Modelos ainda não carregados.');
+    if (!isModelsLoaded) return alert('Modelos ainda não carregados.');
     const img = cameraRef.current;
     if (!img || !img.complete) return alert('Câmera IP não pronta. Verifique se configurou uma câmera no Monitor.');
 
@@ -1376,7 +1443,13 @@ function SearchView() {
                   
                   <div className="bg-white/5 p-4 rounded-2xl border border-white/5 mb-4">
                     <p className="text-[10px] text-zinc-500 uppercase font-black tracking-widest mb-1 italic">Momento Exato</p>
-                    <p className="text-md font-mono text-zinc-200">{m.timestamp ? new Date(m.timestamp.toDate()).toLocaleString() : 'Data Indisponível'}</p>
+                    <p className="text-md font-mono text-zinc-200">
+                      {m.timestamp ? (
+                        typeof m.timestamp.toDate === 'function' 
+                          ? m.timestamp.toDate().toLocaleString() 
+                          : new Date(m.timestamp).toLocaleString()
+                      ) : 'Data Indisponível'}
+                    </p>
                   </div>
                   
                   <div className={`text-center py-2 rounded-xl text-[10px] font-black tracking-[0.2em] uppercase ${m.status === 'Ameaça Hostil' ? 'bg-red-500/20 text-red-500' : 'bg-amber-500/20 text-amber-500'}`}>
@@ -1404,8 +1477,14 @@ function SearchView() {
               <div key={cap.id} className="relative group rounded-2xl overflow-hidden border border-white/10 bg-zinc-900 shadow-2xl">
                 <img src={cap.imageUrl} className="w-full h-32 object-cover opacity-80 group-hover:opacity-100 transition-all" alt="Sighting"/>
                 <div className="p-3">
-                  <p className="text-[10px] font-black uppercase text-blue-500 truncate">{cap.status}</p>
-                  <p className="text-[9px] text-zinc-500 font-mono">CAM {cap.camId} | {cap.timestamp?.toDate().toLocaleTimeString()}</p>
+                  <p className="text-[10px] font-black uppercase text-blue-500 truncate">{cap.status || 'Captura'}</p>
+                  <p className="text-[9px] text-zinc-500 font-mono">
+                    CAM {cap.camId} | {cap.timestamp ? (
+                      typeof cap.timestamp.toDate === 'function' 
+                        ? cap.timestamp.toDate().toLocaleTimeString() 
+                        : new Date(cap.timestamp).toLocaleTimeString()
+                    ) : '--:--'}
+                  </p>
                 </div>
               </div>
             ))}
@@ -1495,7 +1574,13 @@ function AdminView({ onSync, setSelectedImage }) {
                 <div className="flex-1">
                   <h4 className="text-2xl font-black uppercase text-white tracking-tighter">{user.name}</h4>
                   <p className="text-blue-400 font-bold text-sm tracking-widest uppercase">{user.cargo} <span className="text-zinc-600 mx-2">|</span> <span className="text-zinc-400">{user.departamento}</span></p>
-                  <p className="text-zinc-600 text-[10px] mt-2 font-mono uppercase">Registado em: {user.createdAt ? new Date(user.createdAt.toDate()).toLocaleDateString() : 'Desconhecido'}</p>
+                  <p className="text-zinc-600 text-[10px] mt-2 font-mono uppercase">
+                    Registado em: {user.createdAt ? (
+                      typeof user.createdAt.toDate === 'function' 
+                        ? user.createdAt.toDate().toLocaleDateString() 
+                        : new Date(user.createdAt).toLocaleDateString()
+                    ) : 'Desconhecido'}
+                  </p>
                 </div>
               </div>
               <button 

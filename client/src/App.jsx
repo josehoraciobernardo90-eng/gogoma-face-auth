@@ -762,7 +762,7 @@ export default function GogomaSentinelFirebase() {
         </div>
 
         {/* Header Profissional */}
-        <header className="flex justify-between items-center mb-8 border-b border-white/5 pb-4">
+        <header className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4 mt-8 md:mt-4 z-50 w-full border-b border-white/5 pb-4">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 bg-blue-600/20 rounded-xl flex items-center justify-center border border-blue-500/40">
               <Shield className="text-blue-500" size={28} />
@@ -777,7 +777,7 @@ export default function GogomaSentinelFirebase() {
           </div>
           
           <nav className="flex items-center gap-3">
-            <div className="flex items-center gap-3">
+            <div className="hidden md:flex items-center gap-3">
               <div className="flex items-center gap-2 bg-white/5 p-1 rounded-xl border border-white/10">
                 <input 
                   type="text" 
@@ -859,7 +859,7 @@ export default function GogomaSentinelFirebase() {
                       <div key={cam.id} className="relative rounded-2xl overflow-hidden border-2 border-blue-500/30 bg-[#050505] min-h-[300px]">
                         
                         {/* IP Input (SEMPRE NO TOPO) */}
-                        <div className="absolute top-2 left-2 z-[100] flex flex-col gap-2">
+                        <div className="absolute top-2 left-2 z-[100] hidden md:flex flex-col gap-2">
                           <div className="bg-black/90 p-3 rounded-2xl border-2 border-blue-500/40 flex items-center gap-3 shadow-[0_0_30px_rgba(0,0,0,0.8)]">
                             <span className="text-xs font-black text-blue-400">IP:</span>
                             <input 
@@ -928,7 +928,7 @@ export default function GogomaSentinelFirebase() {
                           </div>
                         </div>
 
-                        <div className="absolute top-2 right-2 z-[100] flex gap-2">
+                        <div className="absolute top-2 right-2 z-[100] hidden md:flex gap-2">
                           <button 
                             onClick={() => {
                               const container = cameraRefs.current[i].parentElement;
@@ -986,7 +986,7 @@ export default function GogomaSentinelFirebase() {
                     ))}
                   </div>
 
-                  <div className="absolute bottom-6 right-6 flex flex-col gap-3 z-50">
+                  <div className="absolute bottom-6 right-6 hidden md:flex flex-col gap-3 z-50">
                     <button onClick={toggleFullScreen} className="bg-black/60 backdrop-blur-md p-3 rounded-xl hover:bg-blue-600 text-white border border-white/20 transition-all shadow-xl">
                       {isFullscreen ? <Minimize size={20} /> : <Maximize size={20} />}
                     </button>

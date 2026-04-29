@@ -6,8 +6,10 @@ import json
 import threading
 import requests
 
-# --- CONFIGURAÇÕES DINÂMICAS ---
-SERVER_API_URL = "http://127.0.0.1:3001/api/config"
+# --- CONFIGURAÇÕES DINÂMICAS FIREBASE ---
+PROJECT_ID = "gogoma-sentinel"
+FIRESTORE_URL = f"https://firestore.googleapis.com/v1/projects/{PROJECT_ID}/databases/(default)/documents"
+CONFIG_DOC_URL = f"{FIRESTORE_URL}/system/config"
 
 class VideoStream:
     def __init__(self, src):
@@ -32,18 +34,20 @@ class VideoStream:
         self.stream.release()
 
 def get_camera_source():
-    print("[WAIT] Aguardando configuração de IP no Painel Gogoma...")
+    print("[WAIT] Aguardando configuração de IP no Firebase...")
     while True:
         try:
-            response = requests.get(SERVER_API_URL, timeout=3)
+            response = requests.get(CONFIG_DOC_URL, timeout=3)
             if response.status_code == 200:
-                ip_raw = response.json().get("cameraIp", "0").strip()
+                data = response.json()
+                fields = data.get("fields", {})
+                ip_raw = fields.get("cameraIp", {}).get("stringValue", "0").strip()
                 if ip_raw != "0" and ip_raw != "": 
                     url = ip_raw if ip_raw.startswith("http") else f"http://{ip_raw}:8080/video"
                     print(f"[OK] Câmera Detectada: {url}")
                     return url
         except Exception as e: 
-            print(f"[REDE] Erro ao conectar no servidor: {e}")
+            print(f"[REDE] Erro ao conectar no Firebase: {e}")
         time.sleep(5)
 
 CAMERA_SOURCE = get_camera_source()
@@ -55,7 +59,9 @@ MIN_MOTION_AREA = 40 # Reduzido para capturar pessoas bem distantes
 STOP_DELAY = 10 
 
 def trigger_panic():
-    try: requests.post(SERVER_API_URL, json={"isPanic": True}, timeout=3)
+    try: 
+        requests.patch(f"{CONFIG_DOC_URL}?updateMask.fieldPaths=isPanic", 
+                       json={"fields": {"isPanic": {"booleanValue": True}}}, timeout=3)
     except: pass
 
 def run_sentinel():
@@ -82,11 +88,12 @@ def run_sentinel():
         nonlocal is_armed, is_panic
         while True:
             try:
-                res = requests.get(SERVER_API_URL, timeout=1)
+                res = requests.get(CONFIG_DOC_URL, timeout=1)
                 if res.status_code == 200:
                     data = res.json()
-                    is_armed = data.get("isArmed", False)
-                    is_panic = data.get("isPanic", False)
+                    fields = data.get("fields", {})
+                    is_armed = fields.get("isArmed", {}).get("booleanValue", False)
+                    is_panic = fields.get("isPanic", {}).get("booleanValue", False)
             except: pass
             time.sleep(2)
     
@@ -152,9 +159,10 @@ def run_sentinel():
                     print("[GOGOMA] Iniciando sequência de disparo de alarme...")
                     for i in range(3):
                         try: 
-                            r = requests.post(SERVER_API_URL, json={"isPanic": True}, timeout=2)
+                            r = requests.patch(f"{CONFIG_DOC_URL}?updateMask.fieldPaths=isPanic", 
+                                               json={"fields": {"isPanic": {"booleanValue": True}}}, timeout=2)
                             if r.status_code == 200: 
-                                print(f"[OK] Alarme ativado na tentativa {i+1}")
+                                print(f"[OK] Alarme ativado na nuvem (Tentativa {i+1})")
                                 break
                         except Exception as e: 
                             print(f"[ERRO] Falha no disparo (Tentativa {i+1}): {e}")

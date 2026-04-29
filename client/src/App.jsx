@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import * as faceapi from 'face-api.js';
 import { db, storage } from './firebase';
-import { collection, addDoc, getDocs, query, orderBy, limit, serverTimestamp, deleteDoc, doc, onSnapshot } from 'firebase/firestore';
+import { collection, addDoc, getDocs, query, orderBy, limit, serverTimestamp, deleteDoc, doc, setDoc, onSnapshot } from 'firebase/firestore';
 import { ref, uploadString, getDownloadURL } from 'firebase/storage';
 import { Camera, Users, History, CheckCircle, AlertCircle, Loader2, UserPlus, Shield, Search, Upload, RefreshCw, Trash2, Settings, Maximize, Minimize, ZoomIn, ZoomOut, Zap, Layout, Lock, Unlock } from 'lucide-react';
 
@@ -92,29 +92,14 @@ export default function GogomaSentinelFirebase() {
 
   const saveCameraIp = async (newIp) => {
     setCameraIp(newIp);
-    const configData = { cameraIp: newIp };
     
-    // Tenta via Proxy primeiro (Padrão Profissional)
     try {
-      const response = await fetch('/api/config', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(configData)
-      });
-      if (response.ok) return finalizeSave(newIp);
-    } catch (e) { console.warn("Proxy falhou, tentando conexão direta..."); }
-
-    // Fallback: Tenta conexão direta com o servidor na porta 3001
-    try {
-      const response = await fetch('http://127.0.0.1:3001/api/config', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(configData)
-      });
-      if (response.ok) return finalizeSave(newIp);
+      // Usando Firebase Firestore (Nuvem) em vez de servidor local
+      await setDoc(doc(db, 'system', 'config'), { cameraIp: newIp }, { merge: true });
+      finalizeSave(newIp);
     } catch (e) { 
-      console.error("Erro Fatal de Conexão:", e);
-      alert("Erro de Rede: O servidor Sentinel (Porta 3001) não respondeu."); 
+      console.error("Erro Crítico de Conexão Firebase:", e);
+      alert("Erro de Rede: Não foi possível sincronizar a câmera na nuvem."); 
     }
   };
 
@@ -144,45 +129,28 @@ export default function GogomaSentinelFirebase() {
   };
 
 
-  // 0. Listener para Logs em Tempo Real (Local + Firebase)
+  // 0. Listener para Logs e Configurações em Tempo Real (Apenas Firebase Nuvem)
   useEffect(() => {
-    // 1. Firebase (Nuvem)
+    // 1. Ouvindo Histórico de Alertas (Nuvem)
     const q = query(collection(db, 'detect_history'), orderBy('timestamp', 'desc'), limit(20));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      // Se você quiser misturar nuvem e local, pode fazer aqui
+    const unsubscribeLogs = onSnapshot(q, (snapshot) => {
+      const cloudLogs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setLogs(cloudLogs);
     });
 
-    // 2. Local Server (Computador) - Polling Profissional
-    const fetchLocalConfig = async () => {
-      try {
-        const res = await fetch('/api/config');
-        if (res.ok) {
-          const data = await res.json();
-          // Sincroniza estados externos (ex: se o Python ativou o pânico)
-          if (data.isPanic !== undefined && data.isPanic !== isPanic) setIsPanic(data.isPanic);
-          if (data.isArmed !== undefined && data.isArmed !== isArmed) setIsArmed(data.isArmed);
-        }
-      } catch (e) { }
-    };
-
-    const fetchLocalLogs = async () => {
-      try {
-        const res = await fetch('/api/logs');
-        if (res.ok) {
-          const data = await res.json();
-          setLogs(data);
-        }
-      } catch (e) { console.warn("Aguardando servidor local para carregar logs..."); }
-    };
-
-    fetchLocalLogs();
-    const configInterval = setInterval(fetchLocalConfig, 2000); // Polling rápido de config
-    const logInterval = setInterval(fetchLocalLogs, 5000); // Polling de logs
+    // 2. Ouvindo Configurações de Estado (Armado/Desarmado/Pânico) (Nuvem)
+    const unsubscribeConfig = onSnapshot(doc(db, 'system', 'config'), (docSnap) => {
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        if (data.isPanic !== undefined && data.isPanic !== isPanicRef.current) setIsPanic(data.isPanic);
+        if (data.isArmed !== undefined && data.isArmed !== isArmedRef.current) setIsArmed(data.isArmed);
+        if (data.cameraIp !== undefined && data.cameraIp !== cameraIp) setCameraIp(data.cameraIp);
+      }
+    });
 
     return () => {
-      unsubscribe();
-      clearInterval(configInterval);
-      clearInterval(logInterval);
+      unsubscribeLogs();
+      unsubscribeConfig();
     };
   }, []);
 
@@ -633,6 +601,7 @@ export default function GogomaSentinelFirebase() {
                     setIsPanic(true);
                     isPanicRef.current = true;
                     fetch('/api/config', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ isPanic: true }) }).catch(() => {});
+                    setDoc(doc(db, 'system', 'config'), { isPanic: true }, { merge: true }).catch(() => {});
                 }
             }
 
@@ -686,14 +655,8 @@ export default function GogomaSentinelFirebase() {
   const saveActivityLog = async (detection, image, label, camId = 1, isAuthorized = false) => {
     const timestamp = new Date().toISOString();
 
-    // 1. SALVAMENTO LOCAL (Seu Computador)
-    try {
-      await fetch('/api/logs', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ label, image, timestamp, isRecognized: isAuthorized })
-      });
-    } catch (e) { console.warn("Servidor Local indisponível."); }
+    // 1. SALVAMENTO LOCAL (Removido - 100% Nuvem agora)
+    // O salvamento agora vai direto para o Firebase no passo 3.
 
     // 2. Telegram (Resiliente)
     if (!isAuthorized) {

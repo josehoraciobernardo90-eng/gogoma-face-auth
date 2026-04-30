@@ -443,10 +443,10 @@ export default function GogomaSentinelFirebase() {
               const ctx = canvas.getContext('2d');
               if (!ctx) return;
               
-              // Sincronizar tamanho do Canvas com o tamanho de exibição do vídeo (Dual-Layer Sync)
-              if (canvas.width !== video.clientWidth || canvas.height !== video.clientHeight) {
-                canvas.width = video.clientWidth;
-                canvas.height = video.clientHeight;
+              // Sincronizar tamanho do Canvas com a resolução nativa para que object-cover funcione perfeitamente com a IA
+              if (video.naturalWidth > 0 && (canvas.width !== video.naturalWidth || canvas.height !== video.naturalHeight)) {
+                canvas.width = video.naturalWidth;
+                canvas.height = video.naturalHeight;
               }
 
               // LIMPAR O CANVAS (Para manter a transparência e ver o vídeo por baixo)
@@ -1015,14 +1015,14 @@ export default function GogomaSentinelFirebase() {
           {view === 'monitor' && (
             <div className="grid grid-cols-12 gap-0 md:gap-8 h-full">
               <div className="col-span-12 md:col-span-9 relative group h-screen md:h-auto">
-                <div ref={containerRef} className="relative rounded-none md:rounded-3xl overflow-hidden md:shadow-2xl bg-black md:bg-[#111] h-screen md:h-[650px] p-0 md:p-4 border-none md:border border-white/5">
+                <div ref={containerRef} className="relative rounded-none md:rounded-3xl overflow-y-auto md:shadow-2xl bg-black md:bg-[#111] h-screen md:h-[80vh] p-0 md:p-4 border-none md:border border-white/5 hide-scrollbar [&::-webkit-scrollbar]:hidden">
                   
-                  {/* Mosaico Grid (Arrastar no Telefone, Grid no PC) */}
+                  {/* Mosaico Grid (Arrastar no Telefone, Scroll Vertical no PC) */}
                   <div style={{ transform: `scale(${zoom})`, transformOrigin: 'top center', transition: 'transform 0.3s', scrollbarWidth: 'none' }} 
-                       className={`w-full h-full flex md:grid md:gap-6 ${cameras.length === 1 ? 'md:grid-cols-1' : 'md:grid-cols-2'} overflow-x-auto overflow-y-hidden snap-x snap-mandatory [&::-webkit-scrollbar]:hidden`}>
+                       className={`w-full flex md:grid md:gap-6 ${cameras.length === 1 ? 'md:grid-cols-1' : 'md:grid-cols-2'} overflow-x-auto md:overflow-x-hidden md:overflow-y-visible snap-x snap-mandatory h-full md:h-auto [&::-webkit-scrollbar]:hidden`}>
                     
                     {cameras.map((cam, i) => (
-                      <div key={cam.id} className="relative rounded-none md:rounded-2xl overflow-hidden border-none md:border-2 border-blue-500/30 bg-[#050505] min-h-[300px] h-full min-w-full md:min-w-0 snap-center shrink-0">
+                      <div key={cam.id} className="relative rounded-none md:rounded-2xl overflow-hidden border-none md:border-2 border-blue-500/30 bg-[#050505] min-h-[300px] md:h-[400px] h-full min-w-full md:min-w-0 snap-center shrink-0">
                         
                         {/* IP Input (SEMPRE NO TOPO) */}
                         <div className="absolute top-2 left-2 z-[100] hidden md:flex flex-col gap-2">
@@ -1121,7 +1121,7 @@ export default function GogomaSentinelFirebase() {
                             ref={el => cameraRefs.current[i] = el} 
                             src={cam.url} 
                             crossOrigin="anonymous" 
-                            className="w-full h-full object-contain transition-all duration-500" 
+                            className="w-full h-full object-cover transition-all duration-500" 
                             style={{ 
                               display: 'block', 
                               zIndex: 10,
@@ -1140,12 +1140,12 @@ export default function GogomaSentinelFirebase() {
 
                           <canvas 
                             ref={el => canvasRefs.current[i] = el} 
-                            className="absolute inset-0 pointer-events-none w-full h-full object-contain z-[20]" 
+                            className="absolute inset-0 pointer-events-none w-full h-full object-cover z-[20]" 
                             style={{ transform: `scale(${cam.zoom || 1})` }}
                           />
                         </div>
 
-                        <div className="absolute bottom-2 right-2 z-[30] bg-green-600/20 border border-green-500/40 px-2 py-1 rounded text-[8px] font-black text-green-500 animate-pulse">
+                        <div className="absolute bottom-2 right-2 z-[30] bg-green-600/20 border border-green-500/40 px-2 py-1 rounded text-[8px] font-black text-green-500 animate-pulse opacity-10 md:opacity-100 transition-opacity">
                           LIVE SIGNAL
                         </div>
                       </div>
@@ -1163,8 +1163,8 @@ export default function GogomaSentinelFirebase() {
                     </div>
                   </div>
 
-                  <div className="absolute bottom-8 left-8 flex gap-4 z-40">
-                    <div className="glass-card px-6 py-3 rounded-2xl flex items-center gap-4">
+                  <div className="absolute bottom-8 left-8 flex gap-4 z-40 opacity-10 md:opacity-100 hover:opacity-100 transition-opacity">
+                    <div className="bg-black/20 md:glass-card px-6 py-3 rounded-2xl flex items-center gap-4 backdrop-blur-none md:backdrop-blur-xl">
                       <div className={`w-3 h-3 rounded-full ${identifiedName.includes('Desconhecido') ? 'bg-red-500 animate-pulse' : (identifiedName.includes('Suspeito') ? 'bg-amber-500 animate-bounce' : (identifiedName ? 'bg-blue-500 pulse-blue' : 'bg-gray-500'))}`}></div>
                       <div>
                         <p className="text-[10px] uppercase font-black text-zinc-500 tracking-widest">Alvos Detectados</p>
@@ -1260,7 +1260,7 @@ export default function GogomaSentinelFirebase() {
           </div>
         )}
 
-        {/* MOBILE FLOATING UI (FULL SCREEN IMMERSION) */}
+        {/* MOBILE FLOATING UI (FULL SCREEN IMMERSION ULTRA STEALTH) */}
         <div className="md:hidden">
           {/* Botão de Armar/Desarmar Quase Invisível (Canto Superior Esquerdo) */}
           <button 
@@ -1274,7 +1274,7 @@ export default function GogomaSentinelFirebase() {
               if (!newArmed) payload.isPanic = false;
               setDoc(doc(db, 'system', 'config'), payload, { merge: true });
             }}
-            className={`fixed top-4 left-4 z-[9999] p-3 rounded-full backdrop-blur-sm transition-all opacity-15 hover:opacity-100 ${isArmed ? 'bg-blue-600/30 border border-blue-500/20 shadow-[0_0_15px_rgba(59,130,246,0.2)]' : 'bg-red-600/30 border border-red-500/20'}`}
+            className={`fixed top-4 left-4 z-[9999] p-3 rounded-full backdrop-blur-none transition-all opacity-5 hover:opacity-100 ${isArmed ? 'bg-blue-600/10 border border-blue-500/10' : 'bg-red-600/10 border border-red-500/10'}`}
           >
             {isArmed ? <Lock size={18} className="text-blue-300" /> : <Unlock size={18} className="text-red-400" />}
           </button>
@@ -1304,9 +1304,9 @@ export default function GogomaSentinelFirebase() {
             
             <button 
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="w-12 h-12 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center opacity-30 hover:opacity-100 transition-opacity shadow-lg"
+              className="w-12 h-12 rounded-full bg-white/5 border border-white/5 flex items-center justify-center opacity-5 hover:opacity-100 transition-opacity shadow-none"
             >
-              <Settings size={20} className="text-white opacity-80" />
+              <Settings size={20} className="text-white opacity-50" />
             </button>
           </div>
         </div>

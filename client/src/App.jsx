@@ -52,7 +52,7 @@ export default function GogomaSentinelFirebase() {
   const [isPanic, setIsPanic] = useState(false); 
   const [cameraIp, setCameraIp] = useState(""); 
   const lastResidentRef = useRef(0); 
-
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const cameraRefs = useRef([]);
   const canvasRefs = useRef([]);
@@ -87,6 +87,48 @@ export default function GogomaSentinelFirebase() {
     document.addEventListener('fullscreenchange', handleFullscreenChange);
     return () => {
       document.removeEventListener('fullscreenchange', handleFullscreenChange);
+    };
+  }, []);
+
+  // Força Rotação Automática (Modo Paisagem) no Mobile estilo Game
+  useEffect(() => {
+    const enforceLandscape = async () => {
+      // Aplica apenas para telas menores ou dispositivos móveis
+      if (window.innerWidth < 1024 || /Mobi|Android/i.test(navigator.userAgent)) {
+        try {
+          // A API de lock de tela exige modo Fullscreen ativo na maioria dos navegadores
+          if (!document.fullscreenElement) {
+            if (document.documentElement.requestFullscreen) {
+              await document.documentElement.requestFullscreen().catch(() => {});
+            } else if (document.documentElement.webkitRequestFullscreen) {
+              await document.documentElement.webkitRequestFullscreen().catch(() => {});
+            }
+          }
+          
+          if (window.screen && window.screen.orientation && window.screen.orientation.lock) {
+            await window.screen.orientation.lock('landscape').catch(() => {});
+          }
+        } catch (e) {
+          console.warn('Rotação automática pendente de interação do usuário.');
+        }
+      }
+    };
+
+    enforceLandscape(); // Tenta no carregamento inicial
+
+    // Navegadores mobile geralmente exigem 1 toque do usuário para permitir FullScreen/Girar
+    const handleInteraction = () => {
+      enforceLandscape();
+      document.removeEventListener('click', handleInteraction);
+      document.removeEventListener('touchstart', handleInteraction);
+    };
+
+    document.addEventListener('click', handleInteraction);
+    document.addEventListener('touchstart', handleInteraction);
+
+    return () => {
+      document.removeEventListener('click', handleInteraction);
+      document.removeEventListener('touchstart', handleInteraction);
     };
   }, []);
 
@@ -692,39 +734,135 @@ export default function GogomaSentinelFirebase() {
   };
 
   if (!isModelsLoaded && !status.includes('Erro')) {
+    let percent = 10;
+    if (status.includes('25%')) percent = 25;
+    if (status.includes('50%')) percent = 50;
+    if (status.includes('75%')) percent = 75;
+    if (status.includes('Sentinel Ativo') || isModelsLoaded) percent = 100;
+
+    let displayStatus = status.toUpperCase();
+    if (!displayStatus.includes('CALIBRANDO')) {
+      displayStatus = `CALIBRANDO IA: ${displayStatus}`;
+    }
+
     return (
-      <div className="min-h-screen bg-[#080a0e] flex flex-col items-center justify-center text-white p-10 font-sans relative overflow-hidden">
-        <div className="absolute inset-0 bg-blue-600/5 animate-pulse"></div>
-        <Shield className="text-blue-500 animate-bounce mb-6 relative z-10" size={80} />
-        <h1 className="text-4xl font-black tracking-tighter mb-2 relative z-10">GOGOMA <span className="text-blue-500">SENTINEL</span></h1>
-        <p className="text-zinc-500 uppercase tracking-widest text-xs mb-8 relative z-10 font-mono">Inicializando Protocolos de Defesa v3</p>
-        <div className="bg-blue-600/10 border border-blue-500/30 px-8 py-4 rounded-3xl flex flex-col items-center gap-4 relative z-10 backdrop-blur-xl min-w-[300px]">
-          <div className="flex items-center gap-4">
-            <Loader2 className="animate-spin text-blue-400" size={24} />
-            <div className="flex flex-col">
-              <span className="text-blue-400 font-black font-mono text-sm tracking-tighter">{String(status || 'Standby').toUpperCase()}</span>
-              <span className="text-[10px] text-zinc-500 font-mono">Aguardando resposta dos sensores...</span>
-            </div>
-          </div>
-          <div className="w-full bg-white/5 h-1 rounded-full overflow-hidden">
-            <div 
-              className="h-full bg-blue-500 transition-all duration-500" 
-              style={{ width: status.includes('25%') ? '25%' : (status.includes('50%') ? '50%' : (status.includes('75%') ? '75%' : (isModelsLoaded ? '100%' : '10%'))) }}
-            ></div>
-          </div>
+      <div className="min-h-screen bg-[#030508] flex flex-col items-center justify-center text-white font-sans relative overflow-hidden select-none">
+        {/* Efeitos de Fundo High-Tech */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-blue-900/10 via-[#030508] to-[#030508] z-0"></div>
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAwIDEwIEwgNDAgMTAgTSAxMCAwIEwgMTAgNDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsIDI1NSwgMjU1LCAwLjAyKSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')] z-0 opacity-40"></div>
+        
+        {/* Linha de Scan Radar */}
+        <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+          <div className="w-full h-1 bg-blue-500/20 shadow-[0_0_20px_rgba(59,130,246,0.6)] animate-[scan_4s_ease-in-out_infinite]"></div>
         </div>
 
-        <div className="mt-8 flex flex-col items-center gap-2 z-10">
-          <button 
-            onClick={() => {
-              localStorage.clear();
-              window.location.reload();
-            }}
-            className="text-[9px] text-zinc-600 hover:text-red-500 transition-colors uppercase font-mono tracking-tighter border-b border-zinc-800"
-          >
-            [ LIMPAR CACHE E FORÇAR HARD RESET ]
-          </button>
+        <div className="relative z-10 flex flex-col items-center max-w-2xl w-full px-6">
+          
+          {/* Logo Central com Animação Cyberpunk */}
+          <div className="relative mb-10 flex items-center justify-center">
+            {/* Anéis Giratórios */}
+            <div className="absolute w-40 h-40 border border-blue-500/20 rounded-full animate-ping opacity-50" style={{ animationDuration: '3s' }}></div>
+            <div className="absolute w-[140px] h-[140px] border border-blue-500/10 rounded-full animate-spin" style={{ animationDuration: '4s' }}></div>
+            <div className="absolute w-28 h-28 border-2 border-transparent border-t-blue-500 border-b-blue-500 rounded-full animate-spin" style={{ animationDuration: '1.5s', animationDirection: 'reverse' }}></div>
+            
+            <div className="w-20 h-20 bg-[#0a0f18]/80 backdrop-blur-md rounded-2xl border border-blue-500/40 flex items-center justify-center shadow-[0_0_30px_rgba(59,130,246,0.2)] z-10 relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-transparent"></div>
+              <Shield className="text-blue-400 drop-shadow-[0_0_8px_rgba(59,130,246,0.8)] relative z-10" size={38} />
+            </div>
+          </div>
+
+          {/* Cabeçalho */}
+          <div className="text-center mb-12 relative">
+            <h1 className="text-5xl md:text-6xl font-black tracking-tighter mb-3 text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-100 to-blue-600 drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]">
+              GOGOMA <span className="text-blue-500 drop-shadow-[0_0_15px_rgba(59,130,246,0.5)]">SENTINEL</span>
+            </h1>
+            <div className="flex items-center justify-center gap-4">
+              <div className="h-[1px] w-12 bg-gradient-to-r from-transparent to-blue-500/70"></div>
+              <p className="text-blue-400/90 uppercase tracking-[0.25em] text-xs font-mono font-semibold text-shadow-sm">
+                Inicializando Protocolos de Defesa v3
+              </p>
+              <div className="h-[1px] w-12 bg-gradient-to-l from-transparent to-blue-500/70"></div>
+            </div>
+          </div>
+
+          {/* Painel de Processamento da IA (Status Bar) */}
+          <div className="w-full bg-[#050b14]/80 backdrop-blur-xl border border-blue-500/30 rounded-xl p-6 shadow-[0_0_50px_rgba(0,0,0,0.8)] relative overflow-hidden group">
+            {/* Cantos Tecnológicos */}
+            <div className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-blue-400"></div>
+            <div className="absolute top-0 right-0 w-3 h-3 border-t-2 border-r-2 border-blue-400"></div>
+            <div className="absolute bottom-0 left-0 w-3 h-3 border-b-2 border-l-2 border-blue-400"></div>
+            <div className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-blue-400"></div>
+            
+            {/* Efeito de Reflexo no Painel */}
+            <div className="absolute top-0 -left-[100%] w-1/2 h-full bg-gradient-to-r from-transparent via-white/5 to-transparent skew-x-[-45deg] animate-[shine_3s_infinite]"></div>
+
+            <div className="flex items-start gap-5 relative z-10">
+              <div className="mt-1 bg-blue-950/50 p-2 rounded-lg border border-blue-500/30">
+                <Loader2 className="animate-spin text-blue-400" size={24} />
+              </div>
+              <div className="flex flex-col w-full">
+                <div className="flex justify-between items-end mb-3 w-full">
+                  <span className="text-blue-300 font-bold font-mono text-sm md:text-base tracking-widest uppercase drop-shadow-[0_0_5px_rgba(147,197,253,0.5)]">
+                    {displayStatus}
+                  </span>
+                  <span className="text-blue-400 font-black font-mono text-xl md:text-2xl drop-shadow-[0_0_8px_rgba(96,165,250,0.8)]">
+                    {percent}%
+                  </span>
+                </div>
+                
+                {/* Barra de Progresso Futurista */}
+                <div className="w-full bg-[#020408] h-3 rounded-sm overflow-hidden border border-blue-900/50 relative shadow-inner">
+                  {/* Grid sobre a barra de progresso */}
+                  <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNCIgaGVpZ2h0PSI0IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSI0IiBoZWlnaHQ9IjQiIGZpbGw9InRyYW5zcGFyZW50Ii8+PGxpbmUgeDE9IjAiIHkxPSIwIiB4Mj0iNCIgeTI9IjQiIHN0cm9rZT0icmdiYSgwLCAwLCAwLCAwLjQpIiBzdHJva2Utd2lkdGg9IjEiLz48L3N2Zz4=')] z-10 opacity-50"></div>
+                  
+                  <div 
+                    className="h-full bg-gradient-to-r from-blue-700 via-blue-500 to-cyan-400 relative transition-all duration-700 ease-out flex items-center justify-end"
+                    style={{ width: `${percent}%` }}
+                  >
+                    {/* Ponta brilhante */}
+                    <div className="w-4 h-full bg-white opacity-90 blur-[3px] absolute right-0"></div>
+                  </div>
+                </div>
+                
+                <div className="flex justify-between mt-4 w-full">
+                  <span className="text-[10px] md:text-xs text-blue-300/70 font-mono flex items-center gap-2">
+                    <Zap size={12} className="text-yellow-400 animate-pulse" />
+                    Aguardando resposta dos sensores...
+                  </span>
+                  <span className="text-[10px] text-blue-500/50 font-mono tracking-widest hidden md:inline-block">
+                    SYS.CORE.BOOT // SEC_LEVEL_ALPHA
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-16 z-10 flex flex-col items-center relative group-reset-btn">
+            <button 
+              onClick={() => {
+                localStorage.clear();
+                window.location.reload();
+              }}
+              className="relative flex items-center gap-2 text-[10px] text-zinc-500 hover:text-red-400 transition-all uppercase font-mono tracking-[0.2em] border-b border-transparent hover:border-red-500/30 pb-1 cursor-pointer"
+            >
+              <Trash2 size={12} className="opacity-70" />
+              [ LIMPAR CACHE E FORÇAR HARD RESET ]
+            </button>
+          </div>
         </div>
+        
+        {/* Animações CSS */}
+        <style dangerouslySetInnerHTML={{__html: `
+          @keyframes scan {
+            0% { transform: translateY(-100vh); }
+            100% { transform: translateY(100vh); }
+          }
+          @keyframes shine {
+            0% { left: -100%; }
+            20% { left: 200%; }
+            100% { left: 200%; }
+          }
+        `}} />
       </div>
     );
   }
@@ -754,15 +892,15 @@ export default function GogomaSentinelFirebase() {
   console.log("🖥️ [GOGOMA] Renderizando UI Principal | View:", view, "Models Loaded:", isModelsLoaded);
   return (
     <ErrorBoundary>
-      <div className="min-h-screen bg-[#0a0a0c] text-zinc-100 font-sans p-2 md:p-6 pb-24 md:pb-6 overflow-x-hidden flex flex-col relative">
+      <div className="min-h-screen bg-[#0a0a0c] text-zinc-100 font-sans p-0 md:p-6 pb-0 md:pb-6 overflow-x-hidden flex flex-col relative">
         {/* BARRA DE DIAGNÓSTICO GOGOMA */}
-        <div className="fixed top-0 left-0 right-0 z-[9999] bg-blue-600 text-white text-[10px] font-black px-4 py-1 flex justify-between items-center shadow-2xl">
+        <div className="fixed top-0 left-0 right-0 z-[9999] bg-blue-600 text-white text-[10px] font-black px-4 py-1 hidden md:flex justify-between items-center shadow-2xl">
           <span>GOGOMA SENTINEL V3 // DIAGNÓSTICO ATIVO</span>
           <span>STATUS: {status.toUpperCase()} | IA: {isModelsLoaded ? 'ONLINE' : 'CARREGANDO...'} | MEMBROS: {faceMatcher ? faceMatcher.labeledDescriptors.length : 0} | VIEW: {view.toUpperCase()}</span>
         </div>
 
         {/* Header Profissional */}
-        <header className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4 mt-8 md:mt-4 z-50 w-full border-b border-white/5 pb-4">
+        <header className="hidden md:flex flex-col md:flex-row justify-between items-center mb-8 gap-4 mt-8 md:mt-4 z-50 w-full border-b border-white/5 pb-4">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 bg-blue-600/20 rounded-xl flex items-center justify-center border border-blue-500/40">
               <Shield className="text-blue-500" size={28} />
@@ -847,16 +985,16 @@ export default function GogomaSentinelFirebase() {
         {/* Main View */}
         <main className="flex-1">
           {view === 'monitor' && (
-            <div className="grid grid-cols-12 gap-8 h-full">
-              <div className="col-span-9 relative group">
-                <div ref={containerRef} className="relative rounded-3xl overflow-hidden shadow-2xl bg-[#111] h-[650px] p-4 border border-white/5">
+            <div className="grid grid-cols-12 gap-0 md:gap-8 h-full">
+              <div className="col-span-12 md:col-span-9 relative group h-screen md:h-auto">
+                <div ref={containerRef} className="relative rounded-none md:rounded-3xl overflow-hidden md:shadow-2xl bg-black md:bg-[#111] h-screen md:h-[650px] p-0 md:p-4 border-none md:border border-white/5">
                   
                   {/* Mosaico Grid (Aberto por Padrão) */}
                   <div style={{ transform: `scale(${zoom})`, transformOrigin: 'top center', transition: 'transform 0.3s' }} 
-                       className={`w-full h-full grid gap-6 ${cameras.length === 1 ? 'grid-cols-1' : 'grid-cols-2'}`}>
+                       className={`w-full h-full grid gap-0 md:gap-6 ${cameras.length === 1 ? 'grid-cols-1' : 'grid-cols-2'}`}>
                     
                     {cameras.map((cam, i) => (
-                      <div key={cam.id} className="relative rounded-2xl overflow-hidden border-2 border-blue-500/30 bg-[#050505] min-h-[300px]">
+                      <div key={cam.id} className="relative rounded-none md:rounded-2xl overflow-hidden border-none md:border-2 border-blue-500/30 bg-[#050505] min-h-[300px] h-full">
                         
                         {/* IP Input (SEMPRE NO TOPO) */}
                         <div className="absolute top-2 left-2 z-[100] hidden md:flex flex-col gap-2">
@@ -1009,7 +1147,7 @@ export default function GogomaSentinelFirebase() {
                   </div>
                 </div>
               </div>
-              <div className="col-span-3 flex flex-col gap-4">
+              <div className="hidden md:flex col-span-3 flex-col gap-4">
                  <div className="bg-white/5 border border-white/5 rounded-3xl p-6 flex-1 flex flex-col overflow-hidden">
                     <div className="flex justify-between items-center mb-4">
                       <h3 className="text-sm font-black uppercase text-zinc-500 flex items-center gap-2"><History size={16}/> EVIDÊNCIAS FORENSES</h3>
@@ -1094,38 +1232,55 @@ export default function GogomaSentinelFirebase() {
           </div>
         )}
 
-        {/* BOTTOM NAVIGATION BAR (ANDROID APP FEEL) */}
-        <div className="md:hidden fixed bottom-0 left-0 right-0 bg-[#0a0a0c]/90 backdrop-blur-2xl border-t border-white/10 z-[9999] px-2 py-3 flex justify-around items-center">
-          <button onClick={() => setView('monitor')} className={`flex flex-col items-center gap-1 p-2 ${view === 'monitor' ? 'text-blue-500' : 'text-zinc-500'}`}>
-            <Layout size={24} />
-            <span className="text-[10px] font-bold">Monitor</span>
-          </button>
-          <button onClick={() => setView('register')} className={`flex flex-col items-center gap-1 p-2 ${view === 'register' ? 'text-blue-500' : 'text-zinc-500'}`}>
-            <UserPlus size={24} />
-            <span className="text-[10px] font-bold">Cadastro</span>
-          </button>
-          
-          {/* BOTÃO FLUTUANTE DE PÂNICO NO CENTRO */}
+        {/* MOBILE FLOATING UI (FULL SCREEN IMMERSION) */}
+        <div className="md:hidden">
+          {/* Botão de Armar/Desarmar Quase Invisível (Canto Superior Esquerdo) */}
           <button 
-            onClick={() => {
-              const newPanic = !isPanic;
-              if (!newPanic && audioCtxRef.current) audioCtxRef.current.resume();
-              setIsPanic(newPanic);
-              setDoc(doc(db, 'system', 'config'), { isPanic: newPanic, manual: true }, { merge: true }).catch(e => console.error(e));
-            }} 
-            className={`flex flex-col items-center justify-center -mt-8 w-16 h-16 rounded-full border-4 border-[#0a0a0c] shadow-[0_0_20px_rgba(220,38,38,0.4)] ${isPanic ? 'bg-red-600 text-white animate-pulse' : 'bg-red-950 text-red-500'}`}
+            onClick={() => { 
+              const newArmed = !isArmed;
+              setIsArmed(newArmed); 
+              if (!newArmed) setIsPanic(false);
+              setStatus(newArmed ? 'Sentinel Vigilante' : 'Sentinel em Espera');
+              
+              const payload = { isArmed: newArmed };
+              if (!newArmed) payload.isPanic = false;
+              setDoc(doc(db, 'system', 'config'), payload, { merge: true });
+            }}
+            className={`fixed top-4 left-4 z-[9999] p-3 rounded-full backdrop-blur-sm transition-all opacity-15 hover:opacity-100 ${isArmed ? 'bg-blue-600/30 border border-blue-500/20 shadow-[0_0_15px_rgba(59,130,246,0.2)]' : 'bg-red-600/30 border border-red-500/20'}`}
           >
-            <Zap size={28} />
+            {isArmed ? <Lock size={18} className="text-blue-300" /> : <Unlock size={18} className="text-red-400" />}
           </button>
 
-          <button onClick={() => setView('search')} className={`flex flex-col items-center gap-1 p-2 ${view === 'search' ? 'text-blue-500' : 'text-zinc-500'}`}>
-            <History size={24} />
-            <span className="text-[10px] font-bold">Log</span>
-          </button>
-          <button onClick={() => setView('admin')} className={`flex flex-col items-center gap-1 p-2 ${view === 'admin' ? 'text-blue-500' : 'text-zinc-500'}`}>
-            <Settings size={24} />
-            <span className="text-[10px] font-bold">Gestão</span>
-          </button>
+          {/* Menu Flutuante Oculto no Canto Inferior Direito */}
+          <div className="fixed bottom-4 right-4 z-[9999] flex flex-col items-end gap-2">
+            {isMobileMenuOpen && (
+              <div className="flex flex-col gap-3 bg-black/80 backdrop-blur-md p-3 rounded-3xl border border-white/10 shadow-2xl mb-2 origin-bottom-right transition-all">
+                <button onClick={() => { setView('monitor'); setIsMobileMenuOpen(false); }} className={`p-3 rounded-full flex items-center justify-center ${view === 'monitor' ? 'bg-blue-600 text-white shadow-[0_0_15px_rgba(59,130,246,0.4)]' : 'text-zinc-400 bg-white/5'}`}><Layout size={20} /></button>
+                <button onClick={() => { setView('register'); setIsMobileMenuOpen(false); }} className={`p-3 rounded-full flex items-center justify-center ${view === 'register' ? 'bg-blue-600 text-white shadow-[0_0_15px_rgba(59,130,246,0.4)]' : 'text-zinc-400 bg-white/5'}`}><UserPlus size={20} /></button>
+                <button onClick={() => { setView('search'); setIsMobileMenuOpen(false); }} className={`p-3 rounded-full flex items-center justify-center ${view === 'search' ? 'bg-blue-600 text-white shadow-[0_0_15px_rgba(59,130,246,0.4)]' : 'text-zinc-400 bg-white/5'}`}><History size={20} /></button>
+                <button onClick={() => { setView('admin'); setIsMobileMenuOpen(false); }} className={`p-3 rounded-full flex items-center justify-center ${view === 'admin' ? 'bg-blue-600 text-white shadow-[0_0_15px_rgba(59,130,246,0.4)]' : 'text-zinc-400 bg-white/5'}`}><Settings size={20} /></button>
+                <button 
+                  onClick={() => {
+                    const newPanic = !isPanic;
+                    if (!newPanic && audioCtxRef.current) audioCtxRef.current.resume();
+                    setIsPanic(newPanic);
+                    setDoc(doc(db, 'system', 'config'), { isPanic: newPanic, manual: true }, { merge: true });
+                    setIsMobileMenuOpen(false);
+                  }} 
+                  className={`p-3 rounded-full flex items-center justify-center ${isPanic ? 'bg-red-600 text-white animate-pulse shadow-[0_0_20px_rgba(220,38,38,0.6)]' : 'bg-red-900/50 text-red-500 border border-red-500/20'}`}
+                >
+                  <Zap size={22} />
+                </button>
+              </div>
+            )}
+            
+            <button 
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="w-12 h-12 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center opacity-30 hover:opacity-100 transition-opacity shadow-lg"
+            >
+              <Settings size={20} className="text-white opacity-80" />
+            </button>
+          </div>
         </div>
 
       </div>

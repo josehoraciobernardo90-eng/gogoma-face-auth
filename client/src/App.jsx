@@ -71,15 +71,31 @@ export default function GogomaSentinelFirebase() {
   useEffect(() => { isArmedRef.current = isArmed; }, [isArmed]);
   useEffect(() => { isPanicRef.current = isPanic; }, [isPanic]);
 
+  const syncTimeoutRef = useRef(null);
+
   const saveCameras = (newCameras) => {
     setCameras(newCameras);
     if(newCameras.length > 0) localStorage.setItem('gogoma_camera_url', newCameras[0].url);
+    
+    // Sync instantâneo das câmeras com a nuvem (telefone)
+    if (syncTimeoutRef.current) clearTimeout(syncTimeoutRef.current);
+    syncTimeoutRef.current = setTimeout(() => {
+      setDoc(doc(db, 'system', 'config'), { cameras: newCameras }, { merge: true })
+        .catch(e => console.error("Erro ao sincronizar cameras:", e));
+    }, 1500);
   };
 
   const updateCamZoom = (id, delta) => {
-    setCameras(prev => prev.map(c => 
-      c.id === id ? { ...c, zoom: Math.max(1, Math.min(c.zoom + delta, 5)) } : c
-    ));
+    setCameras(prev => {
+      const newCams = prev.map(c => 
+        c.id === id ? { ...c, zoom: Math.max(1, Math.min(c.zoom + delta, 5)) } : c
+      );
+      if (syncTimeoutRef.current) clearTimeout(syncTimeoutRef.current);
+      syncTimeoutRef.current = setTimeout(() => {
+        setDoc(doc(db, 'system', 'config'), { cameras: newCams }, { merge: true });
+      }, 500);
+      return newCams;
+    });
   };
 
   useEffect(() => {
@@ -156,7 +172,7 @@ export default function GogomaSentinelFirebase() {
       finalUrl = cleanIp.startsWith("http") ? cleanIp : `http://${cleanIp}:8080/video`;
     }
 
-    setCameras([{ id: 1, url: finalUrl, zoom: 1, originalUrl: cleanIp }]);
+    saveCameras([{ id: 1, url: finalUrl, zoom: 1, originalUrl: cleanIp }]);
     alert("SENTINEL SINCRONIZADO: Modo de Alta Velocidade Ativado!");
   };
 
@@ -180,13 +196,22 @@ export default function GogomaSentinelFirebase() {
       setLogs(cloudLogs);
     });
 
-    // 2. Ouvindo Configurações de Estado (Armado/Desarmado/Pânico) (Nuvem)
+    // 2. Ouvindo Configurações de Estado (Armado/Desarmado/Pânico/Cameras) (Nuvem)
     const unsubscribeConfig = onSnapshot(doc(db, 'system', 'config'), (docSnap) => {
       if (docSnap.exists()) {
         const data = docSnap.data();
         if (data.isPanic !== undefined && data.isPanic !== isPanicRef.current) setIsPanic(data.isPanic);
         if (data.isArmed !== undefined && data.isArmed !== isArmedRef.current) setIsArmed(data.isArmed);
         if (data.cameraIp !== undefined && data.cameraIp !== cameraIp) setCameraIp(data.cameraIp);
+        
+        // Sincronização em tempo real do Mosaico (Cameras)
+        if (data.cameras) {
+            setCameras(prevCams => {
+                const isDifferent = JSON.stringify(prevCams) !== JSON.stringify(data.cameras);
+                if (isDifferent) return data.cameras;
+                return prevCams;
+            });
+        }
       }
     });
 
@@ -934,7 +959,10 @@ export default function GogomaSentinelFirebase() {
               </div>
 
               <button 
-                onClick={() => setCameras([...cameras, { id: Date.now(), url: 'http://192.168.1.X:8080/video', zoom: 1 }])}
+                onClick={() => {
+                  const newCams = [...cameras, { id: Date.now(), url: 'http://192.168.1.X:8080/video', zoom: 1 }];
+                  saveCameras(newCams);
+                }}
                 className="px-4 py-2 rounded-xl text-xs font-black transition-all flex items-center gap-2 shadow-lg border bg-zinc-800 text-white border-zinc-700 hover:bg-zinc-700"
               >
                 <Camera size={14} /> ADICIONAR CÂMERA IP
@@ -989,12 +1017,12 @@ export default function GogomaSentinelFirebase() {
               <div className="col-span-12 md:col-span-9 relative group h-screen md:h-auto">
                 <div ref={containerRef} className="relative rounded-none md:rounded-3xl overflow-hidden md:shadow-2xl bg-black md:bg-[#111] h-screen md:h-[650px] p-0 md:p-4 border-none md:border border-white/5">
                   
-                  {/* Mosaico Grid (Aberto por Padrão) */}
-                  <div style={{ transform: `scale(${zoom})`, transformOrigin: 'top center', transition: 'transform 0.3s' }} 
-                       className={`w-full h-full grid gap-0 md:gap-6 ${cameras.length === 1 ? 'grid-cols-1' : 'grid-cols-2'}`}>
+                  {/* Mosaico Grid (Arrastar no Telefone, Grid no PC) */}
+                  <div style={{ transform: `scale(${zoom})`, transformOrigin: 'top center', transition: 'transform 0.3s', scrollbarWidth: 'none' }} 
+                       className={`w-full h-full flex md:grid md:gap-6 ${cameras.length === 1 ? 'md:grid-cols-1' : 'md:grid-cols-2'} overflow-x-auto overflow-y-hidden snap-x snap-mandatory [&::-webkit-scrollbar]:hidden`}>
                     
                     {cameras.map((cam, i) => (
-                      <div key={cam.id} className="relative rounded-none md:rounded-2xl overflow-hidden border-none md:border-2 border-blue-500/30 bg-[#050505] min-h-[300px] h-full">
+                      <div key={cam.id} className="relative rounded-none md:rounded-2xl overflow-hidden border-none md:border-2 border-blue-500/30 bg-[#050505] min-h-[300px] h-full min-w-full md:min-w-0 snap-center shrink-0">
                         
                         {/* IP Input (SEMPRE NO TOPO) */}
                         <div className="absolute top-2 left-2 z-[100] hidden md:flex flex-col gap-2">
